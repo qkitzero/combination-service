@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package combination.v1;
+
+import "google/api/annotations.proto";
+
+option go_package = "github.com/qkitzero/combination-service/gen/go/combination/v1";
+
+service CombinationService {
+  rpc CreateElement(CreateElementRequest) returns (CreateElementResponse) {
+    option (google.api.http) = {
+      post: "/v1/element"
+      body: "*"
+    };
+  }
+}
+
+message CreateElementRequest {
+  string name = 1;
+}
+
+message CreateElementResponse {
+  string element_id = 1;
+}
