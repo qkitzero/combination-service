@@ -12,12 +12,13 @@ import (
 	combinationv1 "github.com/qkitzero/combination-service/gen/go/combination/v1"
 	appcombination "github.com/qkitzero/combination-service/internal/application/combination"
 	"github.com/qkitzero/combination-service/internal/infrastructure/db"
+	infraelement "github.com/qkitzero/combination-service/internal/infrastructure/element"
 	grpccombination "github.com/qkitzero/combination-service/internal/interface/grpc/combination"
 	"github.com/qkitzero/combination-service/util"
 )
 
 func main() {
-	_, err := db.Init(
+	db, err := db.Init(
 		util.GetEnv("DB_HOST", ""),
 		util.GetEnv("DB_USER", ""),
 		util.GetEnv("DB_PASSWORD", ""),
@@ -36,7 +37,9 @@ func main() {
 
 	server := grpc.NewServer()
 
-	combinationUsecase := appcombination.NewCombinationUsecase()
+	elementRepository := infraelement.NewElementRepository(db)
+
+	combinationUsecase := appcombination.NewCombinationUsecase(elementRepository)
 
 	healthServer := health.NewServer()
 	combinationHandler := grpccombination.NewCombinationHandler(combinationUsecase)
