@@ -3,6 +3,7 @@ module github.com/qkitzero/combination-service
 go 1.24.3
 
 require (
+	github.com/google/uuid v1.6.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.26.3
 	go.uber.org/mock v0.6.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20250414145226-207652e42e2e
