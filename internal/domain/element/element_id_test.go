@@ -2,6 +2,8 @@ package element
 
 import (
 	"testing"
+
+	"github.com/google/uuid"
 )
 
 func TestNewElementID(t *testing.T) {
@@ -18,8 +20,8 @@ func TestNewElementID(t *testing.T) {
 			t.Parallel()
 
 			id := NewElementID()
-			if tt.success && id.String() == "" {
-				t.Errorf("expected valid element id string, but got empty string")
+			if tt.success && id.UUID == uuid.Nil {
+				t.Errorf("expected valid element id, but got a nil UUID")
 			}
 		})
 	}
