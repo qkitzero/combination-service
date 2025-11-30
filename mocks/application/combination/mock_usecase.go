@@ -12,6 +12,7 @@ package mocks
 import (
 	reflect "reflect"
 
+	element "github.com/qkitzero/combination-service/internal/domain/element"
 	gomock "go.uber.org/mock/gomock"
 )
 
@@ -40,15 +41,16 @@ func (m *MockCombinationUsecase) EXPECT() *MockCombinationUsecaseMockRecorder {
 }
 
 // CreateElement mocks base method.
-func (m *MockCombinationUsecase) CreateElement() error {
+func (m *MockCombinationUsecase) CreateElement(name string) (element.Element, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CreateElement")
-	ret0, _ := ret[0].(error)
-	return ret0
+	ret := m.ctrl.Call(m, "CreateElement", name)
+	ret0, _ := ret[0].(element.Element)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // CreateElement indicates an expected call of CreateElement.
-func (mr *MockCombinationUsecaseMockRecorder) CreateElement() *gomock.Call {
+func (mr *MockCombinationUsecaseMockRecorder) CreateElement(name any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateElement", reflect.TypeOf((*MockCombinationUsecase)(nil).CreateElement))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateElement", reflect.TypeOf((*MockCombinationUsecase)(nil).CreateElement), name)
 }
