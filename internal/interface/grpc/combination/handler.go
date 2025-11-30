@@ -2,7 +2,6 @@ package combination
 
 import (
 	"context"
-	"fmt"
 
 	combinationv1 "github.com/qkitzero/combination-service/gen/go/combination/v1"
 	appcombination "github.com/qkitzero/combination-service/internal/application/combination"
@@ -20,9 +19,12 @@ func NewCombinationHandler(combinationUsecase appcombination.CombinationUsecase)
 }
 
 func (h *CombinationHandler) CreateElement(ctx context.Context, req *combinationv1.CreateElementRequest) (*combinationv1.CreateElementResponse, error) {
-	fmt.Println(req.GetName())
+	element, err := h.combinationUsecase.CreateElement(req.GetName())
+	if err != nil {
+		return nil, err
+	}
 
 	return &combinationv1.CreateElementResponse{
-		ElementId: "element id",
+		ElementId: element.ID().String(),
 	}, nil
 }
