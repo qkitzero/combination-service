@@ -9,7 +9,7 @@ func TestNewName(t *testing.T) {
 		success     bool
 		elementName string
 	}{
-		{"success new name", true, "test user"},
+		{"success new name", true, "test name"},
 		{"failure empty name", false, ""},
 	}
 	for _, tt := range tests {
