@@ -41,15 +41,15 @@ func (m *MockElementRepository) EXPECT() *MockElementRepositoryMockRecorder {
 }
 
 // Create mocks base method.
-func (m *MockElementRepository) Create(element element.Element) error {
+func (m *MockElementRepository) Create(arg0 element.Element) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Create", element)
+	ret := m.ctrl.Call(m, "Create", arg0)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Create indicates an expected call of Create.
-func (mr *MockElementRepositoryMockRecorder) Create(element any) *gomock.Call {
+func (mr *MockElementRepositoryMockRecorder) Create(arg0 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockElementRepository)(nil).Create), element)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockElementRepository)(nil).Create), arg0)
 }
