@@ -19,7 +19,8 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	CombinationService_CreateElement_FullMethodName = "/combination.v1.CombinationService/CreateElement"
+	CombinationService_CreateElement_FullMethodName  = "/combination.v1.CombinationService/CreateElement"
+	CombinationService_CreateCategory_FullMethodName = "/combination.v1.CombinationService/CreateCategory"
 )
 
 // CombinationServiceClient is the client API for CombinationService service.
@@ -27,6 +28,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type CombinationServiceClient interface {
 	CreateElement(ctx context.Context, in *CreateElementRequest, opts ...grpc.CallOption) (*CreateElementResponse, error)
+	CreateCategory(ctx context.Context, in *CreateCategoryRequest, opts ...grpc.CallOption) (*CreateCategoryResponse, error)
 }
 
 type combinationServiceClient struct {
@@ -47,11 +49,22 @@ func (c *combinationServiceClient) CreateElement(ctx context.Context, in *Create
 	return out, nil
 }
 
+func (c *combinationServiceClient) CreateCategory(ctx context.Context, in *CreateCategoryRequest, opts ...grpc.CallOption) (*CreateCategoryResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateCategoryResponse)
+	err := c.cc.Invoke(ctx, CombinationService_CreateCategory_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // CombinationServiceServer is the server API for CombinationService service.
 // All implementations must embed UnimplementedCombinationServiceServer
 // for forward compatibility.
 type CombinationServiceServer interface {
 	CreateElement(context.Context, *CreateElementRequest) (*CreateElementResponse, error)
+	CreateCategory(context.Context, *CreateCategoryRequest) (*CreateCategoryResponse, error)
 	mustEmbedUnimplementedCombinationServiceServer()
 }
 
@@ -64,6 +77,9 @@ type UnimplementedCombinationServiceServer struct{}
 
 func (UnimplementedCombinationServiceServer) CreateElement(context.Context, *CreateElementRequest) (*CreateElementResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateElement not implemented")
+}
+func (UnimplementedCombinationServiceServer) CreateCategory(context.Context, *CreateCategoryRequest) (*CreateCategoryResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateCategory not implemented")
 }
 func (UnimplementedCombinationServiceServer) mustEmbedUnimplementedCombinationServiceServer() {}
 func (UnimplementedCombinationServiceServer) testEmbeddedByValue()                            {}
@@ -104,6 +120,24 @@ func _CombinationService_CreateElement_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _CombinationService_CreateCategory_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateCategoryRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CombinationServiceServer).CreateCategory(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CombinationService_CreateCategory_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CombinationServiceServer).CreateCategory(ctx, req.(*CreateCategoryRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // CombinationService_ServiceDesc is the grpc.ServiceDesc for CombinationService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -114,6 +148,10 @@ var CombinationService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateElement",
 			Handler:    _CombinationService_CreateElement_Handler,
+		},
+		{
+			MethodName: "CreateCategory",
+			Handler:    _CombinationService_CreateCategory_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

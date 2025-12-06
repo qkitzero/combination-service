@@ -12,6 +12,7 @@ package mocks
 import (
 	reflect "reflect"
 
+	category "github.com/qkitzero/combination-service/internal/domain/category"
 	element "github.com/qkitzero/combination-service/internal/domain/element"
 	gomock "go.uber.org/mock/gomock"
 )
@@ -38,6 +39,21 @@ func NewMockCombinationUsecase(ctrl *gomock.Controller) *MockCombinationUsecase 
 // EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockCombinationUsecase) EXPECT() *MockCombinationUsecaseMockRecorder {
 	return m.recorder
+}
+
+// CreateCategory mocks base method.
+func (m *MockCombinationUsecase) CreateCategory(name string) (category.Category, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateCategory", name)
+	ret0, _ := ret[0].(category.Category)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateCategory indicates an expected call of CreateCategory.
+func (mr *MockCombinationUsecaseMockRecorder) CreateCategory(name any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateCategory", reflect.TypeOf((*MockCombinationUsecase)(nil).CreateCategory), name)
 }
 
 // CreateElement mocks base method.

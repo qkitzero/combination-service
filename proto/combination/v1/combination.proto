@@ -9,7 +9,13 @@ option go_package = "github.com/qkitzero/combination-service/gen/go/combination/
 service CombinationService {
   rpc CreateElement(CreateElementRequest) returns (CreateElementResponse) {
     option (google.api.http) = {
-      post: "/v1/element"
+      post: "/v1/elements"
+      body: "*"
+    };
+  }
+  rpc CreateCategory(CreateCategoryRequest) returns (CreateCategoryResponse) {
+    option (google.api.http) = {
+      post: "/v1/categories"
       body: "*"
     };
   }
@@ -21,4 +27,12 @@ message CreateElementRequest {
 
 message CreateElementResponse {
   string element_id = 1;
+}
+
+message CreateCategoryRequest {
+  string name = 1;
+}
+
+message CreateCategoryResponse {
+  string category_id = 1;
 }
