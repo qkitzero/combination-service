@@ -35,7 +35,7 @@ func (u *combinationUsecase) CreateElement(name string) (element.Element, error)
 
 	now := time.Now()
 
-	newElement := element.NewElement(element.NewElementID(), newName, now)
+	newElement := element.NewElement(element.NewElementID(), newName, []category.Category{}, now)
 
 	if err = u.elementRepo.Create(newElement); err != nil {
 		return nil, err
