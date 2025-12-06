@@ -39,9 +39,9 @@ func main() {
 	server := grpc.NewServer()
 
 	elementRepository := infraelement.NewElementRepository(db)
-	categoryRepositoy := infracategory.NewCategoryRepository(db)
+	categoryRepository := infracategory.NewCategoryRepository(db)
 
-	combinationUsecase := appcombination.NewCombinationUsecase(elementRepository, categoryRepositoy)
+	combinationUsecase := appcombination.NewCombinationUsecase(elementRepository, categoryRepository)
 
 	healthServer := health.NewServer()
 	combinationHandler := grpccombination.NewCombinationHandler(combinationUsecase)
