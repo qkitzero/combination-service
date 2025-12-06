@@ -24,7 +24,7 @@ func TestNewElement(t *testing.T) {
 	}
 	categoryName, err := category.NewName("test category")
 	if err != nil {
-		t.Errorf("failed to new name: %v", err)
+		t.Errorf("failed to new category name: %v", err)
 	}
 	categories := []category.Category{category.NewCategory(categoryID, categoryName, time.Now())}
 	tests := []struct {

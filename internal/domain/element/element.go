@@ -29,7 +29,9 @@ func (e element) Name() Name {
 }
 
 func (e element) Categories() []category.Category {
-	return e.categories
+	c := make([]category.Category, len(e.categories))
+	copy(c, e.categories)
+	return c
 }
 
 func (e element) CreatedAt() time.Time {
