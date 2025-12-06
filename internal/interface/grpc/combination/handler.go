@@ -28,3 +28,14 @@ func (h *CombinationHandler) CreateElement(ctx context.Context, req *combination
 		ElementId: element.ID().String(),
 	}, nil
 }
+
+func (h *CombinationHandler) CreateCategory(ctx context.Context, req *combinationv1.CreateCategoryRequest) (*combinationv1.CreateCategoryResponse, error) {
+	category, err := h.combinationUsecase.CreateCategory(req.GetName())
+	if err != nil {
+		return nil, err
+	}
+
+	return &combinationv1.CreateCategoryResponse{
+		CategoryId: category.ID().String(),
+	}, nil
+}

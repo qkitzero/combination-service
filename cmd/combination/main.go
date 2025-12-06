@@ -11,6 +11,7 @@ import (
 
 	combinationv1 "github.com/qkitzero/combination-service/gen/go/combination/v1"
 	appcombination "github.com/qkitzero/combination-service/internal/application/combination"
+	infracategory "github.com/qkitzero/combination-service/internal/infrastructure/category"
 	"github.com/qkitzero/combination-service/internal/infrastructure/db"
 	infraelement "github.com/qkitzero/combination-service/internal/infrastructure/element"
 	grpccombination "github.com/qkitzero/combination-service/internal/interface/grpc/combination"
@@ -38,8 +39,9 @@ func main() {
 	server := grpc.NewServer()
 
 	elementRepository := infraelement.NewElementRepository(db)
+	categoryRepositoy := infracategory.NewCategoryRepository(db)
 
-	combinationUsecase := appcombination.NewCombinationUsecase(elementRepository)
+	combinationUsecase := appcombination.NewCombinationUsecase(elementRepository, categoryRepositoy)
 
 	healthServer := health.NewServer()
 	combinationHandler := grpccombination.NewCombinationHandler(combinationUsecase)

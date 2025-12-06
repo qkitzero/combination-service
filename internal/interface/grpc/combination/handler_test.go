@@ -9,8 +9,10 @@ import (
 
 	"github.com/google/uuid"
 	combinationv1 "github.com/qkitzero/combination-service/gen/go/combination/v1"
+	"github.com/qkitzero/combination-service/internal/domain/category"
 	"github.com/qkitzero/combination-service/internal/domain/element"
 	mocksappcombination "github.com/qkitzero/combination-service/mocks/application/combination"
+	mockscategory "github.com/qkitzero/combination-service/mocks/domain/category"
 	mockselement "github.com/qkitzero/combination-service/mocks/domain/element"
 )
 
@@ -46,6 +48,48 @@ func TestCreateElement(t *testing.T) {
 			}
 
 			_, err := combinationHandler.CreateElement(tt.ctx, req)
+			if tt.success && err != nil {
+				t.Errorf("expected no error, but got %v", err)
+			}
+			if !tt.success && err == nil {
+				t.Errorf("expected error, but got nil")
+			}
+		})
+	}
+}
+
+func TestCreateCategory(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name              string
+		success           bool
+		ctx               context.Context
+		categoryName      string
+		createCategoryErr error
+	}{
+		{"success create category", true, context.Background(), "test category", nil},
+		{"failure create category error", false, context.Background(), "test category", fmt.Errorf("create category error")},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			ctrl := gomock.NewController(t)
+			defer ctrl.Finish()
+
+			mockCategory := mockscategory.NewMockCategory(ctrl)
+			mockCategory.EXPECT().ID().Return(category.CategoryID{UUID: uuid.New()}).AnyTimes()
+			mockCombinationUsecase := mocksappcombination.NewMockCombinationUsecase(ctrl)
+			mockCombinationUsecase.EXPECT().CreateCategory(tt.categoryName).Return(mockCategory, tt.createCategoryErr).AnyTimes()
+
+			combinationHandler := NewCombinationHandler(mockCombinationUsecase)
+
+			req := &combinationv1.CreateCategoryRequest{
+				Name: tt.categoryName,
+			}
+
+			_, err := combinationHandler.CreateCategory(tt.ctx, req)
 			if tt.success && err != nil {
 				t.Errorf("expected no error, but got %v", err)
 			}
