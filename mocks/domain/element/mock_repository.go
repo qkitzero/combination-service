@@ -53,3 +53,18 @@ func (mr *MockElementRepositoryMockRecorder) Create(arg0 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockElementRepository)(nil).Create), arg0)
 }
+
+// FindAll mocks base method.
+func (m *MockElementRepository) FindAll() ([]element.Element, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindAll")
+	ret0, _ := ret[0].([]element.Element)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindAll indicates an expected call of FindAll.
+func (mr *MockElementRepositoryMockRecorder) FindAll() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindAll", reflect.TypeOf((*MockElementRepository)(nil).FindAll))
+}

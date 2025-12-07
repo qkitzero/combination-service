@@ -3,8 +3,10 @@ package element
 import (
 	"gorm.io/gorm"
 
+	"github.com/qkitzero/combination-service/internal/domain/category"
 	"github.com/qkitzero/combination-service/internal/domain/element"
-	"github.com/qkitzero/combination-service/internal/infrastructure/relation"
+	infracategory "github.com/qkitzero/combination-service/internal/infrastructure/category"
+	infrarelation "github.com/qkitzero/combination-service/internal/infrastructure/relation"
 )
 
 type elementRepository struct {
@@ -31,9 +33,9 @@ func (r *elementRepository) Create(e element.Element) error {
 			return nil
 		}
 
-		elementCategoryModels := make([]relation.ElementCategoryModel, len(e.Categories()))
+		elementCategoryModels := make([]infrarelation.ElementCategoryModel, len(e.Categories()))
 		for i, c := range e.Categories() {
-			elementCategoryModels[i] = relation.ElementCategoryModel{
+			elementCategoryModels[i] = infrarelation.ElementCategoryModel{
 				ElementID:  e.ID(),
 				CategoryID: c.ID(),
 			}
@@ -45,4 +47,69 @@ func (r *elementRepository) Create(e element.Element) error {
 
 		return nil
 	})
+}
+
+func (r *elementRepository) FindAll() ([]element.Element, error) {
+	var elementModels []ElementModel
+	if err := r.db.Find(&elementModels).Error; err != nil {
+		return nil, err
+	}
+
+	elementIDs := make([]element.ElementID, len(elementModels))
+	for i, e := range elementModels {
+		elementIDs[i] = e.ID
+	}
+
+	var elementCategoryModels []infrarelation.ElementCategoryModel
+	if err := r.db.Where("element_id IN ?", elementIDs).Find(&elementCategoryModels).Error; err != nil {
+		return nil, err
+	}
+
+	categoryIDSet := make(map[category.CategoryID]struct{})
+	for _, ec := range elementCategoryModels {
+		categoryIDSet[ec.CategoryID] = struct{}{}
+	}
+
+	categoryIDs := make([]category.CategoryID, 0, len(categoryIDSet))
+	for id := range categoryIDSet {
+		categoryIDs = append(categoryIDs, id)
+	}
+
+	var categoryModels []infracategory.CategoryModel
+	if err := r.db.Where("id IN ?", categoryIDs).Find(&categoryModels).Error; err != nil {
+		return nil, err
+	}
+
+	categoryMap := make(map[category.CategoryID]infracategory.CategoryModel)
+	for _, c := range categoryModels {
+		categoryMap[c.ID] = c
+	}
+
+	elementCategories := make(map[element.ElementID][]category.Category)
+	for _, ec := range elementCategoryModels {
+		c, ok := categoryMap[ec.CategoryID]
+		if !ok {
+			continue
+		}
+		elementCategories[ec.ElementID] = append(
+			elementCategories[ec.ElementID],
+			category.NewCategory(
+				c.ID,
+				c.Name,
+				c.CreatedAt,
+			),
+		)
+	}
+
+	elements := make([]element.Element, len(elementModels))
+	for i, e := range elementModels {
+		elements[i] = element.NewElement(
+			e.ID,
+			e.Name,
+			elementCategories[e.ID],
+			e.CreatedAt,
+		)
+	}
+
+	return elements, nil
 }
