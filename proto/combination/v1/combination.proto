@@ -23,6 +23,7 @@ service CombinationService {
 
 message CreateElementRequest {
   string name = 1;
+  repeated string category_ids = 2;
 }
 
 message CreateElementResponse {

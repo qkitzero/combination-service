@@ -23,10 +23,11 @@ func TestCreateElement(t *testing.T) {
 		success          bool
 		ctx              context.Context
 		elementName      string
+		categoryIDs      []string
 		createElementErr error
 	}{
-		{"success create element", true, context.Background(), "test element", nil},
-		{"failure create element error", false, context.Background(), "test element", fmt.Errorf("create element error")},
+		{"success create element", true, context.Background(), "test element", []string{"91b349ab-2ffc-45cd-adab-61d248b3f9d9"}, nil},
+		{"failure create element error", false, context.Background(), "test element", []string{"91b349ab-2ffc-45cd-adab-61d248b3f9d9"}, fmt.Errorf("create element error")},
 	}
 	for _, tt := range tests {
 		tt := tt
@@ -39,12 +40,13 @@ func TestCreateElement(t *testing.T) {
 			mockElement := mockselement.NewMockElement(ctrl)
 			mockElement.EXPECT().ID().Return(element.ElementID{UUID: uuid.New()}).AnyTimes()
 			mockCombinationUsecase := mocksappcombination.NewMockCombinationUsecase(ctrl)
-			mockCombinationUsecase.EXPECT().CreateElement(tt.elementName).Return(mockElement, tt.createElementErr).AnyTimes()
+			mockCombinationUsecase.EXPECT().CreateElement(tt.elementName, tt.categoryIDs).Return(mockElement, tt.createElementErr).AnyTimes()
 
 			combinationHandler := NewCombinationHandler(mockCombinationUsecase)
 
 			req := &combinationv1.CreateElementRequest{
-				Name: tt.elementName,
+				Name:        tt.elementName,
+				CategoryIds: tt.categoryIDs,
 			}
 
 			_, err := combinationHandler.CreateElement(tt.ctx, req)

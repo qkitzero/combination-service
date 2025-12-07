@@ -8,7 +8,7 @@ import (
 )
 
 type CombinationUsecase interface {
-	CreateElement(name string) (element.Element, error)
+	CreateElement(name string, categoryIDs []string) (element.Element, error)
 	CreateCategory(name string) (category.Category, error)
 }
 
@@ -27,15 +27,29 @@ func NewCombinationUsecase(
 	}
 }
 
-func (u *combinationUsecase) CreateElement(name string) (element.Element, error) {
+func (u *combinationUsecase) CreateElement(name string, categoryIDs []string) (element.Element, error) {
 	newName, err := element.NewName(name)
+	if err != nil {
+		return nil, err
+	}
+
+	cids := make([]category.CategoryID, 0, len(categoryIDs))
+	for _, id := range categoryIDs {
+		cid, err := category.NewCategoryIDFromString(id)
+		if err != nil {
+			return nil, err
+		}
+		cids = append(cids, cid)
+	}
+
+	categories, err := u.categoryRepo.FindAllByIDs(cids)
 	if err != nil {
 		return nil, err
 	}
 
 	now := time.Now()
 
-	newElement := element.NewElement(element.NewElementID(), newName, []category.Category{}, now)
+	newElement := element.NewElement(element.NewElementID(), newName, categories, now)
 
 	if err = u.elementRepo.Create(newElement); err != nil {
 		return nil, err
