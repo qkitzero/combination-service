@@ -177,10 +177,14 @@ func TestFindAllByIDs(t *testing.T) {
 		setup   func(mock sqlmock.Sqlmock, ids []category.CategoryID)
 	}{
 		{
-			name:    "success no category",
+			name:    "success find all categories by ids",
 			success: true,
 			ids:     []category.CategoryID{},
 			setup: func(mock sqlmock.Sqlmock, ids []category.CategoryID) {
+				categoryRows := sqlmock.NewRows([]string{"id", "name", "created_at"})
+				mock.ExpectQuery(regexp.QuoteMeta(`SELECT * FROM "categories" WHERE id IN (NULL)`)).
+					WithArgs().
+					WillReturnRows(categoryRows)
 			},
 		},
 		{
@@ -216,17 +220,6 @@ func TestFindAllByIDs(t *testing.T) {
 				mock.ExpectQuery(regexp.QuoteMeta(`SELECT * FROM "categories" WHERE id IN ($1)`)).
 					WithArgs(ids[0]).
 					WillReturnError(errors.New("find category error"))
-			},
-		},
-		{
-			name:    "failure category not found",
-			success: false,
-			ids:     []category.CategoryID{{UUID: uuid.New()}},
-			setup: func(mock sqlmock.Sqlmock, ids []category.CategoryID) {
-				categoryRows := sqlmock.NewRows([]string{"id", "name", "created_at"})
-				mock.ExpectQuery(regexp.QuoteMeta(`SELECT * FROM "categories" WHERE id IN ($1)`)).
-					WithArgs(ids[0]).
-					WillReturnRows(categoryRows)
 			},
 		},
 	}

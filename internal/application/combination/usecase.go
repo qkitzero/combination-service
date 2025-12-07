@@ -42,12 +42,9 @@ func (u *combinationUsecase) CreateElement(name string, categoryIDs []string) (e
 		cids = append(cids, cid)
 	}
 
-	var categories []category.Category
-	if len(cids) > 0 {
-		categories, err = u.categoryRepo.FindAllByIDs(cids)
-		if err != nil {
-			return nil, err
-		}
+	categories, err := u.categoryRepo.FindAllByIDs(cids)
+	if err != nil {
+		return nil, err
 	}
 
 	now := time.Now()

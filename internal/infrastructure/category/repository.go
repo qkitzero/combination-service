@@ -50,18 +50,10 @@ func (r *categoryRepository) FindByID(id category.CategoryID) (category.Category
 }
 
 func (r *categoryRepository) FindAllByIDs(ids []category.CategoryID) ([]category.Category, error) {
-	if len(ids) == 0 {
-		return []category.Category{}, nil
-	}
-
 	var categoryModels []CategoryModel
 	err := r.db.Where("id IN ?", ids).Find(&categoryModels).Error
 	if err != nil {
 		return nil, err
-	}
-
-	if len(categoryModels) == 0 {
-		return nil, category.ErrCategoryNotFound
 	}
 
 	categories := make([]category.Category, len(categoryModels))
