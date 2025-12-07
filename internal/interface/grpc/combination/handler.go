@@ -35,9 +35,9 @@ func (h *CombinationHandler) ListElements(ctx context.Context, req *combinationv
 		return nil, err
 	}
 
-	var pbElements []*combinationv1.Element
+	pbElements := make([]*combinationv1.Element, 0, len(elements))
 	for _, element := range elements {
-		var pbCategories []*combinationv1.Category
+		pbCategories := make([]*combinationv1.Category, 0, len(element.Categories()))
 		for _, category := range element.Categories() {
 			pbCategory := &combinationv1.Category{
 				Id:   category.ID().String(),

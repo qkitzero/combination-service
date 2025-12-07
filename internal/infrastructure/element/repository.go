@@ -65,9 +65,14 @@ func (r *elementRepository) FindAll() ([]element.Element, error) {
 		return nil, err
 	}
 
-	categoryIDs := make([]category.CategoryID, 0)
+	categoryIDSet := make(map[category.CategoryID]struct{})
 	for _, ec := range elementCategoryModels {
-		categoryIDs = append(categoryIDs, ec.CategoryID)
+		categoryIDSet[ec.CategoryID] = struct{}{}
+	}
+
+	categoryIDs := make([]category.CategoryID, 0, len(categoryIDSet))
+	for id := range categoryIDSet {
+		categoryIDs = append(categoryIDs, id)
 	}
 
 	var categoryModels []infracategory.CategoryModel
