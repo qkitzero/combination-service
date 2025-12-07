@@ -16,7 +16,7 @@
     "application/json"
   ],
   "paths": {
-    "/v1/category": {
+    "/v1/categories": {
       "post": {
         "operationId": "CombinationService_CreateCategory",
         "responses": {
@@ -48,7 +48,7 @@
         ]
       }
     },
-    "/v1/element": {
+    "/v1/elements": {
       "post": {
         "operationId": "CombinationService_CreateElement",
         "responses": {
@@ -131,6 +131,12 @@
       "properties": {
         "name": {
           "type": "string"
+        },
+        "categoryIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         }
       }
     },

@@ -95,7 +95,7 @@ func RegisterCombinationServiceHandlerServer(ctx context.Context, mux *runtime.S
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/combination.v1.CombinationService/CreateElement", runtime.WithHTTPPathPattern("/v1/element"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/combination.v1.CombinationService/CreateElement", runtime.WithHTTPPathPattern("/v1/elements"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -115,7 +115,7 @@ func RegisterCombinationServiceHandlerServer(ctx context.Context, mux *runtime.S
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/combination.v1.CombinationService/CreateCategory", runtime.WithHTTPPathPattern("/v1/category"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/combination.v1.CombinationService/CreateCategory", runtime.WithHTTPPathPattern("/v1/categories"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -173,7 +173,7 @@ func RegisterCombinationServiceHandlerClient(ctx context.Context, mux *runtime.S
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/combination.v1.CombinationService/CreateElement", runtime.WithHTTPPathPattern("/v1/element"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/combination.v1.CombinationService/CreateElement", runtime.WithHTTPPathPattern("/v1/elements"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -190,7 +190,7 @@ func RegisterCombinationServiceHandlerClient(ctx context.Context, mux *runtime.S
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/combination.v1.CombinationService/CreateCategory", runtime.WithHTTPPathPattern("/v1/category"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/combination.v1.CombinationService/CreateCategory", runtime.WithHTTPPathPattern("/v1/categories"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -207,8 +207,8 @@ func RegisterCombinationServiceHandlerClient(ctx context.Context, mux *runtime.S
 }
 
 var (
-	pattern_CombinationService_CreateElement_0  = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "element"}, ""))
-	pattern_CombinationService_CreateCategory_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "category"}, ""))
+	pattern_CombinationService_CreateElement_0  = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "elements"}, ""))
+	pattern_CombinationService_CreateCategory_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "categories"}, ""))
 )
 
 var (
