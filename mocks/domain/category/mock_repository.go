@@ -53,3 +53,18 @@ func (mr *MockCategoryRepositoryMockRecorder) Create(arg0 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockCategoryRepository)(nil).Create), arg0)
 }
+
+// FindByID mocks base method.
+func (m *MockCategoryRepository) FindByID(id category.CategoryID) (category.Category, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindByID", id)
+	ret0, _ := ret[0].(category.Category)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindByID indicates an expected call of FindByID.
+func (mr *MockCategoryRepositoryMockRecorder) FindByID(id any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByID", reflect.TypeOf((*MockCategoryRepository)(nil).FindByID), id)
+}
