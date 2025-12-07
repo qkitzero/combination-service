@@ -9,6 +9,7 @@ import (
 
 type CombinationUsecase interface {
 	CreateElement(name string, categoryIDs []string) (element.Element, error)
+	ListElements() ([]element.Element, error)
 	CreateCategory(name string) (category.Category, error)
 }
 
@@ -56,6 +57,10 @@ func (u *combinationUsecase) CreateElement(name string, categoryIDs []string) (e
 	}
 
 	return newElement, nil
+}
+
+func (u *combinationUsecase) ListElements() ([]element.Element, error) {
+	return u.elementRepo.FindAll()
 }
 
 func (u *combinationUsecase) CreateCategory(name string) (category.Category, error) {

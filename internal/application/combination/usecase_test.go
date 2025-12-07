@@ -7,6 +7,7 @@ import (
 	"go.uber.org/mock/gomock"
 
 	"github.com/qkitzero/combination-service/internal/domain/category"
+	"github.com/qkitzero/combination-service/internal/domain/element"
 	mockscategory "github.com/qkitzero/combination-service/mocks/domain/category"
 	mockselement "github.com/qkitzero/combination-service/mocks/domain/element"
 )
@@ -49,6 +50,39 @@ func TestCreateElement(t *testing.T) {
 			combinationUsecase := NewCombinationUsecase(mockElementRepository, mockCategoryRepository)
 
 			_, err := combinationUsecase.CreateElement(tt.elementName, tt.categoryIDs)
+			if tt.success && err != nil {
+				t.Errorf("expected no error, but got %v", err)
+			}
+			if !tt.success && err == nil {
+				t.Errorf("expected error, but got nil")
+			}
+		})
+	}
+}
+
+func TestListElements(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name    string
+		success bool
+	}{
+		{"success list elements", true},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			ctrl := gomock.NewController(t)
+			defer ctrl.Finish()
+
+			mockElementRepository := mockselement.NewMockElementRepository(ctrl)
+			mockElementRepository.EXPECT().FindAll().Return([]element.Element{}, nil).AnyTimes()
+			mockCategoryRepository := mockscategory.NewMockCategoryRepository(ctrl)
+
+			combinationUsecase := NewCombinationUsecase(mockElementRepository, mockCategoryRepository)
+
+			_, err := combinationUsecase.ListElements()
 			if tt.success && err != nil {
 				t.Errorf("expected no error, but got %v", err)
 			}

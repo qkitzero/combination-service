@@ -29,6 +29,35 @@ func (h *CombinationHandler) CreateElement(ctx context.Context, req *combination
 	}, nil
 }
 
+func (h *CombinationHandler) ListElements(ctx context.Context, req *combinationv1.ListElementsRequest) (*combinationv1.ListElementsResponse, error) {
+	elements, err := h.combinationUsecase.ListElements()
+	if err != nil {
+		return nil, err
+	}
+
+	var pbElements []*combinationv1.Element
+	for _, element := range elements {
+		var pbCategories []*combinationv1.Category
+		for _, category := range element.Categories() {
+			pbCategory := &combinationv1.Category{
+				Id:   category.ID().String(),
+				Name: category.Name().String(),
+			}
+			pbCategories = append(pbCategories, pbCategory)
+		}
+		pbElement := &combinationv1.Element{
+			Id:         element.ID().String(),
+			Name:       element.Name().String(),
+			Categories: pbCategories,
+		}
+		pbElements = append(pbElements, pbElement)
+	}
+
+	return &combinationv1.ListElementsResponse{
+		Elements: pbElements,
+	}, nil
+}
+
 func (h *CombinationHandler) CreateCategory(ctx context.Context, req *combinationv1.CreateCategoryRequest) (*combinationv1.CreateCategoryResponse, error) {
 	category, err := h.combinationUsecase.CreateCategory(req.GetName())
 	if err != nil {

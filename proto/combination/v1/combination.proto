@@ -13,12 +13,26 @@ service CombinationService {
       body: "*"
     };
   }
+  rpc ListElements(ListElementsRequest) returns (ListElementsResponse) {
+    option (google.api.http) = {get: "/v1/elements"};
+  }
   rpc CreateCategory(CreateCategoryRequest) returns (CreateCategoryResponse) {
     option (google.api.http) = {
       post: "/v1/categories"
       body: "*"
     };
   }
+}
+
+message Element {
+  string id = 1;
+  string name = 2;
+  repeated Category categories = 3;
+}
+
+message Category {
+  string id = 1;
+  string name = 2;
 }
 
 message CreateElementRequest {
@@ -28,6 +42,12 @@ message CreateElementRequest {
 
 message CreateElementResponse {
   string element_id = 1;
+}
+
+message ListElementsRequest {}
+
+message ListElementsResponse {
+  repeated Element elements = 1;
 }
 
 message CreateCategoryRequest {

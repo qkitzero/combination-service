@@ -60,6 +60,50 @@ func TestCreateElement(t *testing.T) {
 	}
 }
 
+func TestListElements(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name            string
+		success         bool
+		ctx             context.Context
+		listElementsErr error
+	}{
+		{"success list elements", true, context.Background(), nil},
+		{"failure list elements error", false, context.Background(), fmt.Errorf("list elements error")},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			ctrl := gomock.NewController(t)
+			defer ctrl.Finish()
+
+			mockCategory := mockscategory.NewMockCategory(ctrl)
+			mockCategory.EXPECT().ID().Return(category.CategoryID{UUID: uuid.New()}).AnyTimes()
+			mockCategory.EXPECT().Name().Return(category.Name("test category")).AnyTimes()
+			mockElement := mockselement.NewMockElement(ctrl)
+			mockElement.EXPECT().ID().Return(element.ElementID{UUID: uuid.New()}).AnyTimes()
+			mockElement.EXPECT().Name().Return(element.Name("test element")).AnyTimes()
+			mockElement.EXPECT().Categories().Return([]category.Category{mockCategory}).AnyTimes()
+			mockCombinationUsecase := mocksappcombination.NewMockCombinationUsecase(ctrl)
+			mockCombinationUsecase.EXPECT().ListElements().Return([]element.Element{mockElement}, tt.listElementsErr).AnyTimes()
+
+			combinationHandler := NewCombinationHandler(mockCombinationUsecase)
+
+			req := &combinationv1.ListElementsRequest{}
+
+			_, err := combinationHandler.ListElements(tt.ctx, req)
+			if tt.success && err != nil {
+				t.Errorf("expected no error, but got %v", err)
+			}
+			if !tt.success && err == nil {
+				t.Errorf("expected error, but got nil")
+			}
+		})
+	}
+}
+
 func TestCreateCategory(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
