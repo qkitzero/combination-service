@@ -31,12 +31,12 @@ func (r *elementRepository) Create(e element.Element) error {
 			return nil
 		}
 
-		var elementCategoryModels []relation.ElementCategoryModel
-		for _, c := range e.Categories() {
-			elementCategoryModels = append(elementCategoryModels, relation.ElementCategoryModel{
+		elementCategoryModels := make([]relation.ElementCategoryModel, len(e.Categories()))
+		for i, c := range e.Categories() {
+			elementCategoryModels[i] = relation.ElementCategoryModel{
 				ElementID:  e.ID(),
 				CategoryID: c.ID(),
-			})
+			}
 		}
 
 		if err := tx.Create(&elementCategoryModels).Error; err != nil {

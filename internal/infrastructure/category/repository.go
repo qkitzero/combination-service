@@ -48,3 +48,30 @@ func (r *categoryRepository) FindByID(id category.CategoryID) (category.Category
 		categoryModel.CreatedAt,
 	), nil
 }
+
+func (r *categoryRepository) FindAllByIDs(ids []category.CategoryID) ([]category.Category, error) {
+	if len(ids) == 0 {
+		return []category.Category{}, nil
+	}
+
+	var categoryModels []CategoryModel
+	err := r.db.Where("id IN ?", ids).Find(&categoryModels).Error
+	if err != nil {
+		return nil, err
+	}
+
+	if len(categoryModels) == 0 {
+		return nil, category.ErrCategoryNotFound
+	}
+
+	categories := make([]category.Category, len(categoryModels))
+	for i, m := range categoryModels {
+		categories[i] = category.NewCategory(
+			m.ID,
+			m.Name,
+			m.CreatedAt,
+		)
+	}
+
+	return categories, nil
+}

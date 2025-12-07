@@ -128,16 +128,16 @@ func TestCreate(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
-			categories := make([]category.Category, tt.numCategories)
+			mockCategories := make([]category.Category, tt.numCategories)
 			for i := range tt.numCategories {
 				mockCategory := mockscategory.NewMockCategory(ctrl)
 				mockCategory.EXPECT().ID().Return(category.CategoryID{UUID: uuid.New()}).AnyTimes()
-				categories[i] = mockCategory
+				mockCategories[i] = mockCategory
 			}
 			mockElement := mockselement.NewMockElement(ctrl)
 			mockElement.EXPECT().ID().Return(element.ElementID{UUID: uuid.New()}).AnyTimes()
 			mockElement.EXPECT().Name().Return(element.Name("test element")).AnyTimes()
-			mockElement.EXPECT().Categories().Return(categories).AnyTimes()
+			mockElement.EXPECT().Categories().Return(mockCategories).AnyTimes()
 			mockElement.EXPECT().CreatedAt().Return(time.Now()).AnyTimes()
 
 			tt.setup(mock, mockElement)

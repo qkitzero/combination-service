@@ -6,6 +6,7 @@ import (
 
 	"go.uber.org/mock/gomock"
 
+	"github.com/qkitzero/combination-service/internal/domain/category"
 	mockscategory "github.com/qkitzero/combination-service/mocks/domain/category"
 	mockselement "github.com/qkitzero/combination-service/mocks/domain/element"
 )
@@ -21,6 +22,7 @@ func TestCreateElement(t *testing.T) {
 		findByIDErr error
 	}{
 		{"success create element", true, "test element", []string{"91b349ab-2ffc-45cd-adab-61d248b3f9d9"}, nil, nil},
+		{"success create element no category", true, "test element", []string{}, nil, nil},
 		{"failure empty name", false, "", []string{"91b349ab-2ffc-45cd-adab-61d248b3f9d9"}, nil, nil},
 		{"failure create error", false, "test element", []string{"91b349ab-2ffc-45cd-adab-61d248b3f9d9"}, errors.New("create error"), nil},
 		{"failure invalid category id", false, "test element", []string{"0123456789"}, nil, nil},
@@ -36,9 +38,13 @@ func TestCreateElement(t *testing.T) {
 
 			mockElementRepository := mockselement.NewMockElementRepository(ctrl)
 			mockElementRepository.EXPECT().Create(gomock.Any()).Return(tt.createErr).AnyTimes()
-			mockCategory := mockscategory.NewMockCategory(ctrl)
+			mockCategories := make([]category.Category, len(tt.categoryIDs))
+			for i := range len(tt.categoryIDs) {
+				mockCategory := mockscategory.NewMockCategory(ctrl)
+				mockCategories[i] = mockCategory
+			}
 			mockCategoryRepository := mockscategory.NewMockCategoryRepository(ctrl)
-			mockCategoryRepository.EXPECT().FindByID(gomock.Any()).Return(mockCategory, tt.findByIDErr).AnyTimes()
+			mockCategoryRepository.EXPECT().FindAllByIDs(gomock.Any()).Return(mockCategories, tt.findByIDErr).AnyTimes()
 
 			combinationUsecase := NewCombinationUsecase(mockElementRepository, mockCategoryRepository)
 

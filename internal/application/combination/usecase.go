@@ -33,17 +33,21 @@ func (u *combinationUsecase) CreateElement(name string, categoryIDs []string) (e
 		return nil, err
 	}
 
-	categories := make([]category.Category, 0, len(categoryIDs))
+	cids := make([]category.CategoryID, 0, len(categoryIDs))
 	for _, id := range categoryIDs {
-		categoryID, err := category.NewCategoryIDFromString(id)
+		cid, err := category.NewCategoryIDFromString(id)
 		if err != nil {
 			return nil, err
 		}
-		c, err := u.categoryRepo.FindByID(categoryID)
+		cids = append(cids, cid)
+	}
+
+	var categories []category.Category
+	if len(cids) > 0 {
+		categories, err = u.categoryRepo.FindAllByIDs(cids)
 		if err != nil {
 			return nil, err
 		}
-		categories = append(categories, c)
 	}
 
 	now := time.Now()
