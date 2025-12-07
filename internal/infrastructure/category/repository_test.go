@@ -181,10 +181,6 @@ func TestFindAllByIDs(t *testing.T) {
 			success: true,
 			ids:     []category.CategoryID{},
 			setup: func(mock sqlmock.Sqlmock, ids []category.CategoryID) {
-				categoryRows := sqlmock.NewRows([]string{"id", "name", "created_at"})
-				mock.ExpectQuery(regexp.QuoteMeta(`SELECT * FROM "categories" WHERE id IN (NULL)`)).
-					WithArgs().
-					WillReturnRows(categoryRows)
 			},
 		},
 		{
