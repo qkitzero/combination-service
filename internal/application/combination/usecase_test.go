@@ -39,7 +39,7 @@ func TestCreateElement(t *testing.T) {
 			mockElementRepository := mockselement.NewMockElementRepository(ctrl)
 			mockElementRepository.EXPECT().Create(gomock.Any()).Return(tt.createErr).AnyTimes()
 			mockCategories := make([]category.Category, len(tt.categoryIDs))
-			for i := range len(tt.categoryIDs) {
+			for i := range mockCategories {
 				mockCategory := mockscategory.NewMockCategory(ctrl)
 				mockCategories[i] = mockCategory
 			}

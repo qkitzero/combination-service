@@ -129,7 +129,7 @@ func TestCreate(t *testing.T) {
 			defer ctrl.Finish()
 
 			mockCategories := make([]category.Category, tt.numCategories)
-			for i := range tt.numCategories {
+			for i := range mockCategories {
 				mockCategory := mockscategory.NewMockCategory(ctrl)
 				mockCategory.EXPECT().ID().Return(category.CategoryID{UUID: uuid.New()}).AnyTimes()
 				mockCategories[i] = mockCategory
