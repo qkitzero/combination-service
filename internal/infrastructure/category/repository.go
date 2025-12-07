@@ -1,6 +1,8 @@
 package category
 
 import (
+	"errors"
+
 	"gorm.io/gorm"
 
 	"github.com/qkitzero/combination-service/internal/domain/category"
@@ -28,4 +30,21 @@ func (r *categoryRepository) Create(c category.Category) error {
 
 		return nil
 	})
+}
+
+func (r *categoryRepository) FindByID(id category.CategoryID) (category.Category, error) {
+	var categoryModel CategoryModel
+	err := r.db.Where("id = ?", id).First(&categoryModel).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, category.ErrCategoryNotFound
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	return category.NewCategory(
+		categoryModel.ID,
+		categoryModel.Name,
+		categoryModel.CreatedAt,
+	), nil
 }

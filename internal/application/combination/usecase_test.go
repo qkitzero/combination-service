@@ -16,11 +16,15 @@ func TestCreateElement(t *testing.T) {
 		name        string
 		success     bool
 		elementName string
+		categoryIDs []string
 		createErr   error
+		findByIDErr error
 	}{
-		{"success create element", true, "test element", nil},
-		{"failure empty name", false, "", nil},
-		{"failure create error", false, "test element", errors.New("create error")},
+		{"success create element", true, "test element", []string{"91b349ab-2ffc-45cd-adab-61d248b3f9d9"}, nil, nil},
+		{"failure empty name", false, "", []string{"91b349ab-2ffc-45cd-adab-61d248b3f9d9"}, nil, nil},
+		{"failure create error", false, "test element", []string{"91b349ab-2ffc-45cd-adab-61d248b3f9d9"}, errors.New("create error"), nil},
+		{"failure invalid category id", false, "test element", []string{"0123456789"}, nil, nil},
+		{"failure find by id error", false, "test element", []string{"91b349ab-2ffc-45cd-adab-61d248b3f9d9"}, nil, errors.New("find by id error")},
 	}
 	for _, tt := range tests {
 		tt := tt
@@ -32,11 +36,13 @@ func TestCreateElement(t *testing.T) {
 
 			mockElementRepository := mockselement.NewMockElementRepository(ctrl)
 			mockElementRepository.EXPECT().Create(gomock.Any()).Return(tt.createErr).AnyTimes()
+			mockCategory := mockscategory.NewMockCategory(ctrl)
 			mockCategoryRepository := mockscategory.NewMockCategoryRepository(ctrl)
+			mockCategoryRepository.EXPECT().FindByID(gomock.Any()).Return(mockCategory, tt.findByIDErr).AnyTimes()
 
 			combinationUsecase := NewCombinationUsecase(mockElementRepository, mockCategoryRepository)
 
-			_, err := combinationUsecase.CreateElement(tt.elementName)
+			_, err := combinationUsecase.CreateElement(tt.elementName, tt.categoryIDs)
 			if tt.success && err != nil {
 				t.Errorf("expected no error, but got %v", err)
 			}

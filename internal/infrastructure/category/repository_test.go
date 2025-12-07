@@ -92,3 +92,78 @@ func TestCreate(t *testing.T) {
 		})
 	}
 }
+
+func TestFindByID(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name    string
+		success bool
+		id      category.CategoryID
+		setup   func(mock sqlmock.Sqlmock, id category.CategoryID)
+	}{
+		{
+			name:    "success find category by id",
+			success: true,
+			id:      category.CategoryID{UUID: uuid.New()},
+			setup: func(mock sqlmock.Sqlmock, id category.CategoryID) {
+				categoryRows := sqlmock.NewRows([]string{"id", "name", "created_at"}).
+					AddRow(id, "test category", time.Now())
+				mock.ExpectQuery(regexp.QuoteMeta(`SELECT * FROM "categories" WHERE id = $1 ORDER BY "categories"."id" LIMIT $2`)).
+					WithArgs(id, 1).
+					WillReturnRows(categoryRows)
+			},
+		},
+		{
+			name:    "failure category not found",
+			success: false,
+			id:      category.CategoryID{UUID: uuid.New()},
+			setup: func(mock sqlmock.Sqlmock, id category.CategoryID) {
+				mock.ExpectQuery(regexp.QuoteMeta(`SELECT * FROM "categories" WHERE id = $1 ORDER BY "categories"."id" LIMIT $2`)).
+					WithArgs(id, 1).
+					WillReturnError(gorm.ErrRecordNotFound)
+			},
+		},
+		{
+			name:    "failure find category error",
+			success: false,
+			id:      category.CategoryID{UUID: uuid.New()},
+			setup: func(mock sqlmock.Sqlmock, id category.CategoryID) {
+				mock.ExpectQuery(regexp.QuoteMeta(`SELECT * FROM "categories" WHERE id = $1 ORDER BY "categories"."id" LIMIT $2`)).
+					WithArgs(id, 1).
+					WillReturnError(errors.New("find category error"))
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			sqlDB, mock, err := sqlmock.New()
+			if err != nil {
+				t.Errorf("failed to new sqlmock: %s", err)
+			}
+
+			gormDB, err := gorm.Open(postgres.New(postgres.Config{Conn: sqlDB}), &gorm.Config{})
+			if err != nil {
+				t.Errorf("failed to open gorm: %s", err)
+			}
+
+			tt.setup(mock, tt.id)
+
+			repo := NewCategoryRepository(gormDB)
+
+			_, err = repo.FindByID(tt.id)
+			if tt.success && err != nil {
+				t.Errorf("expected no error, but got %v", err)
+			}
+			if !tt.success && err == nil {
+				t.Errorf("expected error, but got nil")
+			}
+
+			if err := mock.ExpectationsWereMet(); err != nil {
+				t.Errorf("there were unfulfilled expectations: %s", err)
+			}
+		})
+	}
+}

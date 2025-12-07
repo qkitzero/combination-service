@@ -4,6 +4,7 @@ import (
 	"gorm.io/gorm"
 
 	"github.com/qkitzero/combination-service/internal/domain/element"
+	"github.com/qkitzero/combination-service/internal/infrastructure/relation"
 )
 
 type elementRepository struct {
@@ -23,6 +24,22 @@ func (r *elementRepository) Create(e element.Element) error {
 		}
 
 		if err := tx.Create(&elementModel).Error; err != nil {
+			return err
+		}
+
+		if len(e.Categories()) == 0 {
+			return nil
+		}
+
+		var elementCategoryModels []relation.ElementCategoryModel
+		for _, c := range e.Categories() {
+			elementCategoryModels = append(elementCategoryModels, relation.ElementCategoryModel{
+				ElementID:  e.ID(),
+				CategoryID: c.ID(),
+			})
+		}
+
+		if err := tx.Create(&elementCategoryModels).Error; err != nil {
 			return err
 		}
 

@@ -19,7 +19,7 @@ func NewCombinationHandler(combinationUsecase appcombination.CombinationUsecase)
 }
 
 func (h *CombinationHandler) CreateElement(ctx context.Context, req *combinationv1.CreateElementRequest) (*combinationv1.CreateElementResponse, error) {
-	element, err := h.combinationUsecase.CreateElement(req.GetName())
+	element, err := h.combinationUsecase.CreateElement(req.GetName(), req.GetCategoryIds())
 	if err != nil {
 		return nil, err
 	}
