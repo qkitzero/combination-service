@@ -20,6 +20,7 @@ const _ = grpc.SupportPackageIsVersion9
 
 const (
 	CombinationService_CreateElement_FullMethodName  = "/combination.v1.CombinationService/CreateElement"
+	CombinationService_ListElements_FullMethodName   = "/combination.v1.CombinationService/ListElements"
 	CombinationService_CreateCategory_FullMethodName = "/combination.v1.CombinationService/CreateCategory"
 )
 
@@ -28,6 +29,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type CombinationServiceClient interface {
 	CreateElement(ctx context.Context, in *CreateElementRequest, opts ...grpc.CallOption) (*CreateElementResponse, error)
+	ListElements(ctx context.Context, in *ListElementsRequest, opts ...grpc.CallOption) (*ListElementsResponse, error)
 	CreateCategory(ctx context.Context, in *CreateCategoryRequest, opts ...grpc.CallOption) (*CreateCategoryResponse, error)
 }
 
@@ -49,6 +51,16 @@ func (c *combinationServiceClient) CreateElement(ctx context.Context, in *Create
 	return out, nil
 }
 
+func (c *combinationServiceClient) ListElements(ctx context.Context, in *ListElementsRequest, opts ...grpc.CallOption) (*ListElementsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListElementsResponse)
+	err := c.cc.Invoke(ctx, CombinationService_ListElements_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *combinationServiceClient) CreateCategory(ctx context.Context, in *CreateCategoryRequest, opts ...grpc.CallOption) (*CreateCategoryResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(CreateCategoryResponse)
@@ -64,6 +76,7 @@ func (c *combinationServiceClient) CreateCategory(ctx context.Context, in *Creat
 // for forward compatibility.
 type CombinationServiceServer interface {
 	CreateElement(context.Context, *CreateElementRequest) (*CreateElementResponse, error)
+	ListElements(context.Context, *ListElementsRequest) (*ListElementsResponse, error)
 	CreateCategory(context.Context, *CreateCategoryRequest) (*CreateCategoryResponse, error)
 	mustEmbedUnimplementedCombinationServiceServer()
 }
@@ -77,6 +90,9 @@ type UnimplementedCombinationServiceServer struct{}
 
 func (UnimplementedCombinationServiceServer) CreateElement(context.Context, *CreateElementRequest) (*CreateElementResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateElement not implemented")
+}
+func (UnimplementedCombinationServiceServer) ListElements(context.Context, *ListElementsRequest) (*ListElementsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListElements not implemented")
 }
 func (UnimplementedCombinationServiceServer) CreateCategory(context.Context, *CreateCategoryRequest) (*CreateCategoryResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateCategory not implemented")
@@ -120,6 +136,24 @@ func _CombinationService_CreateElement_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _CombinationService_ListElements_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListElementsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CombinationServiceServer).ListElements(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CombinationService_ListElements_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CombinationServiceServer).ListElements(ctx, req.(*ListElementsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _CombinationService_CreateCategory_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CreateCategoryRequest)
 	if err := dec(in); err != nil {
@@ -148,6 +182,10 @@ var CombinationService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateElement",
 			Handler:    _CombinationService_CreateElement_Handler,
+		},
+		{
+			MethodName: "ListElements",
+			Handler:    _CombinationService_ListElements_Handler,
 		},
 		{
 			MethodName: "CreateCategory",
