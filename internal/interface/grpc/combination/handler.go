@@ -68,3 +68,23 @@ func (h *CombinationHandler) CreateCategory(ctx context.Context, req *combinatio
 		CategoryId: category.ID().String(),
 	}, nil
 }
+
+func (h *CombinationHandler) ListCategories(ctx context.Context, req *combinationv1.ListCategoriesRequest) (*combinationv1.ListCategoriesResponse, error) {
+	categories, err := h.combinationUsecase.ListCategories()
+	if err != nil {
+		return nil, err
+	}
+
+	pbCategories := make([]*combinationv1.Category, 0, len(categories))
+	for _, category := range categories {
+		pbCategory := &combinationv1.Category{
+			Id:   category.ID().String(),
+			Name: category.Name().String(),
+		}
+		pbCategories = append(pbCategories, pbCategory)
+	}
+
+	return &combinationv1.ListCategoriesResponse{
+		Categories: pbCategories,
+	}, nil
+}

@@ -145,3 +145,43 @@ func TestCreateCategory(t *testing.T) {
 		})
 	}
 }
+
+func TestListCategories(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name              string
+		success           bool
+		ctx               context.Context
+		listCategoriesErr error
+	}{
+		{"success list categories", true, context.Background(), nil},
+		{"failure list categories error", false, context.Background(), fmt.Errorf("list categories error")},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			ctrl := gomock.NewController(t)
+			defer ctrl.Finish()
+
+			mockCategory := mockscategory.NewMockCategory(ctrl)
+			mockCategory.EXPECT().ID().Return(category.CategoryID{UUID: uuid.New()}).AnyTimes()
+			mockCategory.EXPECT().Name().Return(category.Name("test category")).AnyTimes()
+			mockCombinationUsecase := mocksappcombination.NewMockCombinationUsecase(ctrl)
+			mockCombinationUsecase.EXPECT().ListCategories().Return([]category.Category{mockCategory}, tt.listCategoriesErr).AnyTimes()
+
+			combinationHandler := NewCombinationHandler(mockCombinationUsecase)
+
+			req := &combinationv1.ListCategoriesRequest{}
+
+			_, err := combinationHandler.ListCategories(tt.ctx, req)
+			if tt.success && err != nil {
+				t.Errorf("expected no error, but got %v", err)
+			}
+			if !tt.success && err == nil {
+				t.Errorf("expected error, but got nil")
+			}
+		})
+	}
+}
