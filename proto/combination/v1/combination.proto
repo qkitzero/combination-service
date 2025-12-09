@@ -22,6 +22,9 @@ service CombinationService {
       body: "*"
     };
   }
+  rpc ListCategories(ListCategoriesRequest) returns (ListCategoriesResponse) {
+    option (google.api.http) = {get: "/v1/categories"};
+  }
 }
 
 message Element {
@@ -56,4 +59,10 @@ message CreateCategoryRequest {
 
 message CreateCategoryResponse {
   string category_id = 1;
+}
+
+message ListCategoriesRequest {}
+
+message ListCategoriesResponse {
+  repeated Category categories = 1;
 }

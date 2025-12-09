@@ -11,6 +11,7 @@ type CombinationUsecase interface {
 	CreateElement(name string, categoryIDs []string) (element.Element, error)
 	ListElements() ([]element.Element, error)
 	CreateCategory(name string) (category.Category, error)
+	ListCategories() ([]category.Category, error)
 }
 
 type combinationUsecase struct {
@@ -78,4 +79,8 @@ func (u *combinationUsecase) CreateCategory(name string) (category.Category, err
 	}
 
 	return newCategory, nil
+}
+
+func (u *combinationUsecase) ListCategories() ([]category.Category, error) {
+	return u.categoryRepo.FindAll()
 }
