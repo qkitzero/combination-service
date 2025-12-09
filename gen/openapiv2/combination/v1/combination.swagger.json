@@ -17,6 +17,26 @@
   ],
   "paths": {
     "/v1/categories": {
+      "get": {
+        "operationId": "CombinationService_ListCategories",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListCategoriesResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "CombinationService"
+        ]
+      },
       "post": {
         "operationId": "CombinationService_CreateCategory",
         "responses": {
@@ -188,6 +208,18 @@
         "name": {
           "type": "string"
         },
+        "categories": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Category"
+          }
+        }
+      }
+    },
+    "v1ListCategoriesResponse": {
+      "type": "object",
+      "properties": {
         "categories": {
           "type": "array",
           "items": {
