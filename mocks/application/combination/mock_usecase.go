@@ -71,6 +71,21 @@ func (mr *MockCombinationUsecaseMockRecorder) CreateElement(name, categoryIDs an
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateElement", reflect.TypeOf((*MockCombinationUsecase)(nil).CreateElement), name, categoryIDs)
 }
 
+// ListCategories mocks base method.
+func (m *MockCombinationUsecase) ListCategories() ([]category.Category, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListCategories")
+	ret0, _ := ret[0].([]category.Category)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListCategories indicates an expected call of ListCategories.
+func (mr *MockCombinationUsecaseMockRecorder) ListCategories() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListCategories", reflect.TypeOf((*MockCombinationUsecase)(nil).ListCategories))
+}
+
 // ListElements mocks base method.
 func (m *MockCombinationUsecase) ListElements() ([]element.Element, error) {
 	m.ctrl.T.Helper()
