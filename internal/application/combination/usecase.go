@@ -5,6 +5,7 @@ import (
 
 	"github.com/qkitzero/combination-service/internal/domain/category"
 	"github.com/qkitzero/combination-service/internal/domain/element"
+	"github.com/qkitzero/combination-service/internal/domain/rule"
 )
 
 type CombinationUsecase interface {
@@ -12,6 +13,7 @@ type CombinationUsecase interface {
 	ListElements() ([]element.Element, error)
 	CreateCategory(name string) (category.Category, error)
 	ListCategories() ([]category.Category, error)
+	GetCombination(count int) ([]element.Element, error)
 }
 
 type combinationUsecase struct {
@@ -83,4 +85,22 @@ func (u *combinationUsecase) CreateCategory(name string) (category.Category, err
 
 func (u *combinationUsecase) ListCategories() ([]category.Category, error) {
 	return u.categoryRepo.FindAll()
+}
+
+func (u *combinationUsecase) GetCombination(count int) ([]element.Element, error) {
+	newStrategy := rule.NewStrategy()
+
+	newRule := rule.NewRule(count, newStrategy)
+
+	elements, err := u.elementRepo.FindAll()
+	if err != nil {
+		return nil, err
+	}
+
+	combinationElements, err := newRule.Apply(elements)
+	if err != nil {
+		return nil, err
+	}
+
+	return combinationElements, nil
 }
