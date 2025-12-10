@@ -22,7 +22,19 @@ func (r rule) Strategy() Strategy {
 }
 
 func (r rule) Apply(elements []element.Element) ([]element.Element, error) {
-	return r.strategy.Combine(elements, r.count)
+	if r.count < 0 {
+		return nil, ErrInvalidCount
+	}
+
+	if r.count > len(elements) {
+		return nil, ErrInvalidCount
+	}
+
+	if r.count == 0 {
+		return []element.Element{}, nil
+	}
+
+	return r.strategy.Random(elements, r.count)
 }
 
 func NewRule(
