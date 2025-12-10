@@ -88,3 +88,32 @@ func (h *CombinationHandler) ListCategories(ctx context.Context, req *combinatio
 		Categories: pbCategories,
 	}, nil
 }
+
+func (h *CombinationHandler) GetCombination(ctx context.Context, req *combinationv1.GetCombinationRequest) (*combinationv1.GetCombinationResponse, error) {
+	elements, err := h.combinationUsecase.GetCombination(int(req.GetCount()))
+	if err != nil {
+		return nil, err
+	}
+
+	pbElements := make([]*combinationv1.Element, 0, len(elements))
+	for _, element := range elements {
+		pbCategories := make([]*combinationv1.Category, 0, len(element.Categories()))
+		for _, category := range element.Categories() {
+			pbCategory := &combinationv1.Category{
+				Id:   category.ID().String(),
+				Name: category.Name().String(),
+			}
+			pbCategories = append(pbCategories, pbCategory)
+		}
+		pbElement := &combinationv1.Element{
+			Id:         element.ID().String(),
+			Name:       element.Name().String(),
+			Categories: pbCategories,
+		}
+		pbElements = append(pbElements, pbElement)
+	}
+
+	return &combinationv1.GetCombinationResponse{
+		Elements: pbElements,
+	}, nil
+}
