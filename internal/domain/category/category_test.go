@@ -39,7 +39,6 @@ func TestNewCategory(t *testing.T) {
 			if tt.success && !category.CreatedAt().Equal(tt.createdAt) {
 				t.Errorf("CreatedAt() = %v, want %v", category.CreatedAt(), tt.createdAt)
 			}
-
 		})
 	}
 }
