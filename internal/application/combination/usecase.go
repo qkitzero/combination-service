@@ -88,7 +88,7 @@ func (u *combinationUsecase) ListCategories() ([]category.Category, error) {
 }
 
 func (u *combinationUsecase) GetCombination(count int) ([]element.Element, error) {
-	newStrategy := rule.NewStrategy()
+	newStrategy := rule.NewStrategy(rule.StrategyTypeRandom)
 
 	newRule := rule.NewRule(count, newStrategy)
 

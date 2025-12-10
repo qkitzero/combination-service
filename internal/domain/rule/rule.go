@@ -5,6 +5,8 @@ import (
 )
 
 type Rule interface {
+	Count() int
+	Strategy() Strategy
 	Apply(elements []element.Element) ([]element.Element, error)
 }
 
@@ -34,7 +36,7 @@ func (r rule) Apply(elements []element.Element) ([]element.Element, error) {
 		return []element.Element{}, nil
 	}
 
-	return r.strategy.Random(elements, r.count)
+	return r.strategy.Select(r.count, elements)
 }
 
 func NewRule(
