@@ -24,10 +24,6 @@ func (r rule) Strategy() Strategy {
 }
 
 func (r rule) Apply(elements []element.Element) ([]element.Element, error) {
-	if r.count < 0 {
-		return nil, ErrInvalidCount
-	}
-
 	if r.count > len(elements) {
 		return nil, ErrInvalidCount
 	}
@@ -42,9 +38,12 @@ func (r rule) Apply(elements []element.Element) ([]element.Element, error) {
 func NewRule(
 	count int,
 	strategy Strategy,
-) Rule {
+) (Rule, error) {
+	if count < 0 {
+		return nil, ErrInvalidCount
+	}
 	return &rule{
 		count:    count,
 		strategy: strategy,
-	}
+	}, nil
 }

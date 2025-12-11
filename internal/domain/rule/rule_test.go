@@ -24,13 +24,21 @@ func TestNewRule(t *testing.T) {
 		strategy rule.Strategy
 	}{
 		{"success new rule", true, 3, strategy},
+		{"failure negative count", false, -1, strategy},
 	}
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			rule := rule.NewRule(tt.count, tt.strategy)
+			rule, err := rule.NewRule(tt.count, tt.strategy)
+			if tt.success && err != nil {
+				t.Errorf("expected no error, but got %v", err)
+			}
+			if !tt.success && err == nil {
+				t.Errorf("expected error, but got nil")
+			}
+
 			if tt.success && rule.Count() != tt.count {
 				t.Errorf("Count() = %v, want %v", rule.Count(), tt.count)
 			}
@@ -51,7 +59,6 @@ func TestApply(t *testing.T) {
 	}{
 		{"success apply", true, 3, 5},
 		{"success zero count", true, 0, 5},
-		{"failure invalid count", false, -1, 5},
 		{"failure not enough elements", false, 3, 2},
 	}
 	for _, tt := range tests {
@@ -65,7 +72,10 @@ func TestApply(t *testing.T) {
 			mockStrategy := mocksrule.NewMockStrategy(ctrl)
 			mockStrategy.EXPECT().Select(tt.count, gomock.Any()).Return([]element.Element{}, nil).AnyTimes()
 
-			rule := rule.NewRule(tt.count, mockStrategy)
+			rule, err := rule.NewRule(tt.count, mockStrategy)
+			if err != nil {
+				t.Errorf("failed to new rule: %v", err)
+			}
 
 			mockElement := mockselement.NewMockElement(ctrl)
 
@@ -74,7 +84,7 @@ func TestApply(t *testing.T) {
 				mockElements[i] = mockElement
 			}
 
-			_, err := rule.Apply(mockElements)
+			_, err = rule.Apply(mockElements)
 			if tt.success && err != nil {
 				t.Errorf("expected no error, but got %v", err)
 			}

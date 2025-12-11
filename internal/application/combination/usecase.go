@@ -93,7 +93,10 @@ func (u *combinationUsecase) GetCombination(count int) ([]element.Element, error
 		return nil, err
 	}
 
-	newRule := rule.NewRule(count, newStrategy)
+	newRule, err := rule.NewRule(count, newStrategy)
+	if err != nil {
+		return nil, err
+	}
 
 	elements, err := u.elementRepo.FindAll()
 	if err != nil {
