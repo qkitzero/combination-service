@@ -162,3 +162,42 @@ func TestListCategories(t *testing.T) {
 		})
 	}
 }
+
+func TestGetCombination(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name       string
+		success    bool
+		count      int
+		findAllErr error
+	}{
+		{"success get combination", true, 3, nil},
+		{"failure invalid count", false, -1, nil},
+		{"failure find all error", false, 3, errors.New("find all error")},
+		{"failure not enough elements", false, 10, nil},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			ctrl := gomock.NewController(t)
+			defer ctrl.Finish()
+
+			mockElement := mockselement.NewMockElement(ctrl)
+			mockElementRepository := mockselement.NewMockElementRepository(ctrl)
+			mockElementRepository.EXPECT().FindAll().Return([]element.Element{mockElement, mockElement, mockElement, mockElement, mockElement}, tt.findAllErr).AnyTimes()
+			mockCategoryRepository := mockscategory.NewMockCategoryRepository(ctrl)
+
+			combinationUsecase := NewCombinationUsecase(mockElementRepository, mockCategoryRepository)
+
+			_, err := combinationUsecase.GetCombination(tt.count)
+			if tt.success && err != nil {
+				t.Errorf("expected no error, but got %v", err)
+			}
+			if !tt.success && err == nil {
+				t.Errorf("expected error, but got nil")
+			}
+		})
+	}
+}
