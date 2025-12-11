@@ -14,11 +14,11 @@ type Strategy interface {
 	Select(count int, elements []element.Element) ([]element.Element, error)
 }
 
-func NewStrategy(strategyType StrategyType) Strategy {
+func NewStrategy(strategyType StrategyType) (Strategy, error) {
 	switch strategyType {
 	case StrategyTypeRandom:
-		return newRandomStrategy()
+		return newRandomStrategy(), nil
 	default:
-		return newRandomStrategy()
+		return nil, ErrUnknownStrategyType
 	}
 }
