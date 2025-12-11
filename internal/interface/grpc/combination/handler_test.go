@@ -185,3 +185,50 @@ func TestListCategories(t *testing.T) {
 		})
 	}
 }
+
+func TestGetCombination(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name              string
+		success           bool
+		ctx               context.Context
+		count             int32
+		getCombinationErr error
+	}{
+		{"success get combination", true, context.Background(), 3, nil},
+		{"failure get combination error", false, context.Background(), 3, fmt.Errorf("get combination error")},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			ctrl := gomock.NewController(t)
+			defer ctrl.Finish()
+
+			mockCategory := mockscategory.NewMockCategory(ctrl)
+			mockCategory.EXPECT().ID().Return(category.CategoryID{UUID: uuid.New()}).AnyTimes()
+			mockCategory.EXPECT().Name().Return(category.Name("test category")).AnyTimes()
+			mockElement := mockselement.NewMockElement(ctrl)
+			mockElement.EXPECT().ID().Return(element.ElementID{UUID: uuid.New()}).AnyTimes()
+			mockElement.EXPECT().Name().Return(element.Name("test element")).AnyTimes()
+			mockElement.EXPECT().Categories().Return([]category.Category{mockCategory}).AnyTimes()
+			mockCombinationUsecase := mocksappcombination.NewMockCombinationUsecase(ctrl)
+			mockCombinationUsecase.EXPECT().GetCombination(int(tt.count)).Return([]element.Element{mockElement, mockElement, mockElement}, tt.getCombinationErr).AnyTimes()
+
+			combinationHandler := NewCombinationHandler(mockCombinationUsecase)
+
+			req := &combinationv1.GetCombinationRequest{
+				Count: tt.count,
+			}
+
+			_, err := combinationHandler.GetCombination(tt.ctx, req)
+			if tt.success && err != nil {
+				t.Errorf("expected no error, but got %v", err)
+			}
+			if !tt.success && err == nil {
+				t.Errorf("expected error, but got nil")
+			}
+		})
+	}
+}
