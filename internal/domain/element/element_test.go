@@ -55,7 +55,6 @@ func TestNewElement(t *testing.T) {
 			if tt.success && !element.CreatedAt().Equal(tt.createdAt) {
 				t.Errorf("CreatedAt() = %v, want %v", element.CreatedAt(), tt.createdAt)
 			}
-
 		})
 	}
 }
