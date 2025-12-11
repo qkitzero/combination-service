@@ -13,6 +13,7 @@ import (
 	reflect "reflect"
 
 	element "github.com/qkitzero/combination-service/internal/domain/element"
+	rule "github.com/qkitzero/combination-service/internal/domain/rule"
 	gomock "go.uber.org/mock/gomock"
 )
 
@@ -53,4 +54,32 @@ func (m *MockRule) Apply(elements []element.Element) ([]element.Element, error) 
 func (mr *MockRuleMockRecorder) Apply(elements any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Apply", reflect.TypeOf((*MockRule)(nil).Apply), elements)
+}
+
+// Count mocks base method.
+func (m *MockRule) Count() int {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Count")
+	ret0, _ := ret[0].(int)
+	return ret0
+}
+
+// Count indicates an expected call of Count.
+func (mr *MockRuleMockRecorder) Count() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Count", reflect.TypeOf((*MockRule)(nil).Count))
+}
+
+// Strategy mocks base method.
+func (m *MockRule) Strategy() rule.Strategy {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Strategy")
+	ret0, _ := ret[0].(rule.Strategy)
+	return ret0
+}
+
+// Strategy indicates an expected call of Strategy.
+func (mr *MockRuleMockRecorder) Strategy() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Strategy", reflect.TypeOf((*MockRule)(nil).Strategy))
 }
