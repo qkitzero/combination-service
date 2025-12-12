@@ -42,33 +42,33 @@ func (m *MockCombinationUsecase) EXPECT() *MockCombinationUsecaseMockRecorder {
 }
 
 // CreateCategory mocks base method.
-func (m *MockCombinationUsecase) CreateCategory(name string) (category.Category, error) {
+func (m *MockCombinationUsecase) CreateCategory(name, languageCode string) (category.Category, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CreateCategory", name)
+	ret := m.ctrl.Call(m, "CreateCategory", name, languageCode)
 	ret0, _ := ret[0].(category.Category)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // CreateCategory indicates an expected call of CreateCategory.
-func (mr *MockCombinationUsecaseMockRecorder) CreateCategory(name any) *gomock.Call {
+func (mr *MockCombinationUsecaseMockRecorder) CreateCategory(name, languageCode any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateCategory", reflect.TypeOf((*MockCombinationUsecase)(nil).CreateCategory), name)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateCategory", reflect.TypeOf((*MockCombinationUsecase)(nil).CreateCategory), name, languageCode)
 }
 
 // CreateElement mocks base method.
-func (m *MockCombinationUsecase) CreateElement(name string, categoryIDs []string) (element.Element, error) {
+func (m *MockCombinationUsecase) CreateElement(name, languageCode string, categoryIDs []string) (element.Element, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CreateElement", name, categoryIDs)
+	ret := m.ctrl.Call(m, "CreateElement", name, languageCode, categoryIDs)
 	ret0, _ := ret[0].(element.Element)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // CreateElement indicates an expected call of CreateElement.
-func (mr *MockCombinationUsecaseMockRecorder) CreateElement(name, categoryIDs any) *gomock.Call {
+func (mr *MockCombinationUsecaseMockRecorder) CreateElement(name, languageCode, categoryIDs any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateElement", reflect.TypeOf((*MockCombinationUsecase)(nil).CreateElement), name, categoryIDs)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateElement", reflect.TypeOf((*MockCombinationUsecase)(nil).CreateElement), name, languageCode, categoryIDs)
 }
 
 // GetCombination mocks base method.
