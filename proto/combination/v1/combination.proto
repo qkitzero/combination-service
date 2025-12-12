@@ -25,6 +25,9 @@ service CombinationService {
   rpc ListCategories(ListCategoriesRequest) returns (ListCategoriesResponse) {
     option (google.api.http) = {get: "/v1/categories"};
   }
+  rpc GetCombination(GetCombinationRequest) returns (GetCombinationResponse) {
+    option (google.api.http) = {get: "/v1/combinations"};
+  }
 }
 
 message Element {
@@ -65,4 +68,12 @@ message ListCategoriesRequest {}
 
 message ListCategoriesResponse {
   repeated Category categories = 1;
+}
+
+message GetCombinationRequest {
+  int32 count = 1;
+}
+
+message GetCombinationResponse {
+  repeated Element elements = 1;
 }

@@ -68,6 +68,37 @@
         ]
       }
     },
+    "/v1/combinations": {
+      "get": {
+        "operationId": "CombinationService_GetCombination",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetCombinationResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "count",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "CombinationService"
+        ]
+      }
+    },
     "/v1/elements": {
       "get": {
         "operationId": "CombinationService_ListElements",
@@ -213,6 +244,18 @@
           "items": {
             "type": "object",
             "$ref": "#/definitions/v1Category"
+          }
+        }
+      }
+    },
+    "v1GetCombinationResponse": {
+      "type": "object",
+      "properties": {
+        "elements": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Element"
           }
         }
       }
