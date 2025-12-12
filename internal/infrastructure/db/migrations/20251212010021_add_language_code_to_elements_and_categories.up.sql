@@ -1,0 +1,2 @@
+ALTER TABLE elements ADD COLUMN language_code VARCHAR(2) NOT NULL DEFAULT 'en';
+ALTER TABLE categories ADD COLUMN language_code VARCHAR(2) NOT NULL DEFAULT 'en';

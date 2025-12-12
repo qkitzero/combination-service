@@ -5,13 +5,14 @@ import (
 
 	"github.com/qkitzero/combination-service/internal/domain/category"
 	"github.com/qkitzero/combination-service/internal/domain/element"
+	"github.com/qkitzero/combination-service/internal/domain/language"
 	"github.com/qkitzero/combination-service/internal/domain/rule"
 )
 
 type CombinationUsecase interface {
-	CreateElement(name string, categoryIDs []string) (element.Element, error)
+	CreateElement(name, languageCode string, categoryIDs []string) (element.Element, error)
 	ListElements() ([]element.Element, error)
-	CreateCategory(name string) (category.Category, error)
+	CreateCategory(name, languageCode string) (category.Category, error)
 	ListCategories() ([]category.Category, error)
 	GetCombination(count int) ([]element.Element, error)
 }
@@ -31,8 +32,13 @@ func NewCombinationUsecase(
 	}
 }
 
-func (u *combinationUsecase) CreateElement(name string, categoryIDs []string) (element.Element, error) {
+func (u *combinationUsecase) CreateElement(name, languageCode string, categoryIDs []string) (element.Element, error) {
 	newName, err := element.NewName(name)
+	if err != nil {
+		return nil, err
+	}
+
+	newLanguage, err := language.NewLanguage(languageCode)
 	if err != nil {
 		return nil, err
 	}
@@ -53,7 +59,7 @@ func (u *combinationUsecase) CreateElement(name string, categoryIDs []string) (e
 
 	now := time.Now()
 
-	newElement := element.NewElement(element.NewElementID(), newName, categories, now)
+	newElement := element.NewElement(element.NewElementID(), newName, newLanguage, categories, now)
 
 	if err = u.elementRepo.Create(newElement); err != nil {
 		return nil, err
@@ -66,15 +72,20 @@ func (u *combinationUsecase) ListElements() ([]element.Element, error) {
 	return u.elementRepo.FindAll()
 }
 
-func (u *combinationUsecase) CreateCategory(name string) (category.Category, error) {
+func (u *combinationUsecase) CreateCategory(name, languageCode string) (category.Category, error) {
 	newName, err := category.NewName(name)
+	if err != nil {
+		return nil, err
+	}
+
+	newLanguage, err := language.NewLanguage(languageCode)
 	if err != nil {
 		return nil, err
 	}
 
 	now := time.Now()
 
-	newCategory := category.NewCategory(category.NewCategoryID(), newName, now)
+	newCategory := category.NewCategory(category.NewCategoryID(), newName, newLanguage, now)
 
 	if err = u.categoryRepo.Create(newCategory); err != nil {
 		return nil, err

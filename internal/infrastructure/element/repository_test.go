@@ -14,6 +14,7 @@ import (
 
 	"github.com/qkitzero/combination-service/internal/domain/category"
 	"github.com/qkitzero/combination-service/internal/domain/element"
+	"github.com/qkitzero/combination-service/internal/domain/language"
 	mockscategory "github.com/qkitzero/combination-service/mocks/domain/category"
 	mockselement "github.com/qkitzero/combination-service/mocks/domain/element"
 	"github.com/qkitzero/combination-service/testutil"
@@ -34,8 +35,8 @@ func TestCreate(t *testing.T) {
 			setup: func(mock sqlmock.Sqlmock, element element.Element) {
 				mock.ExpectBegin()
 
-				mock.ExpectExec(regexp.QuoteMeta(`INSERT INTO "elements" ("id","name","created_at") VALUES ($1,$2,$3)`)).
-					WithArgs(element.ID(), element.Name(), testutil.AnyTime{}).
+				mock.ExpectExec(regexp.QuoteMeta(`INSERT INTO "elements" ("id","name","language_code","created_at") VALUES ($1,$2,$3,$4)`)).
+					WithArgs(element.ID(), element.Name(), element.Language(), testutil.AnyTime{}).
 					WillReturnResult(sqlmock.NewResult(1, 1))
 
 				mock.ExpectCommit()
@@ -48,8 +49,8 @@ func TestCreate(t *testing.T) {
 			setup: func(mock sqlmock.Sqlmock, element element.Element) {
 				mock.ExpectBegin()
 
-				mock.ExpectExec(regexp.QuoteMeta(`INSERT INTO "elements" ("id","name","created_at") VALUES ($1,$2,$3)`)).
-					WithArgs(element.ID(), element.Name(), testutil.AnyTime{}).
+				mock.ExpectExec(regexp.QuoteMeta(`INSERT INTO "elements" ("id","name","language_code","created_at") VALUES ($1,$2,$3,$4)`)).
+					WithArgs(element.ID(), element.Name(), element.Language(), testutil.AnyTime{}).
 					WillReturnResult(sqlmock.NewResult(1, 1))
 
 				mock.ExpectExec(regexp.QuoteMeta(`INSERT INTO "element_category" ("element_id","category_id") VALUES ($1,$2)`)).
@@ -66,8 +67,8 @@ func TestCreate(t *testing.T) {
 			setup: func(mock sqlmock.Sqlmock, element element.Element) {
 				mock.ExpectBegin()
 
-				mock.ExpectExec(regexp.QuoteMeta(`INSERT INTO "elements" ("id","name","created_at") VALUES ($1,$2,$3)`)).
-					WithArgs(element.ID(), element.Name(), testutil.AnyTime{}).
+				mock.ExpectExec(regexp.QuoteMeta(`INSERT INTO "elements" ("id","name","language_code","created_at") VALUES ($1,$2,$3,$4)`)).
+					WithArgs(element.ID(), element.Name(), element.Language(), testutil.AnyTime{}).
 					WillReturnResult(sqlmock.NewResult(1, 1))
 
 				mock.ExpectExec(regexp.QuoteMeta(`INSERT INTO "element_category" ("element_id","category_id") VALUES ($1,$2),($3,$4)`)).
@@ -84,8 +85,8 @@ func TestCreate(t *testing.T) {
 			setup: func(mock sqlmock.Sqlmock, element element.Element) {
 				mock.ExpectBegin()
 
-				mock.ExpectExec(regexp.QuoteMeta(`INSERT INTO "elements" ("id","name","created_at") VALUES ($1,$2,$3)`)).
-					WithArgs(element.ID(), element.Name(), testutil.AnyTime{}).
+				mock.ExpectExec(regexp.QuoteMeta(`INSERT INTO "elements" ("id","name","language_code","created_at") VALUES ($1,$2,$3,$4)`)).
+					WithArgs(element.ID(), element.Name(), element.Language(), testutil.AnyTime{}).
 					WillReturnError(errors.New("create element error"))
 
 				mock.ExpectRollback()
@@ -98,8 +99,8 @@ func TestCreate(t *testing.T) {
 			setup: func(mock sqlmock.Sqlmock, element element.Element) {
 				mock.ExpectBegin()
 
-				mock.ExpectExec(regexp.QuoteMeta(`INSERT INTO "elements" ("id","name","created_at") VALUES ($1,$2,$3)`)).
-					WithArgs(element.ID(), element.Name(), testutil.AnyTime{}).
+				mock.ExpectExec(regexp.QuoteMeta(`INSERT INTO "elements" ("id","name","language_code","created_at") VALUES ($1,$2,$3,$4)`)).
+					WithArgs(element.ID(), element.Name(), element.Language(), testutil.AnyTime{}).
 					WillReturnResult(sqlmock.NewResult(1, 1))
 
 				mock.ExpectExec(regexp.QuoteMeta(`INSERT INTO "element_category" ("element_id","category_id") VALUES ($1,$2)`)).
@@ -137,6 +138,7 @@ func TestCreate(t *testing.T) {
 			mockElement := mockselement.NewMockElement(ctrl)
 			mockElement.EXPECT().ID().Return(element.ElementID{UUID: uuid.New()}).AnyTimes()
 			mockElement.EXPECT().Name().Return(element.Name("test element")).AnyTimes()
+			mockElement.EXPECT().Language().Return(language.Language("en")).AnyTimes()
 			mockElement.EXPECT().Categories().Return(mockCategories).AnyTimes()
 			mockElement.EXPECT().CreatedAt().Return(time.Now()).AnyTimes()
 
@@ -172,8 +174,8 @@ func TestFindAll(t *testing.T) {
 				elementID := uuid.New()
 				categoryID := uuid.New()
 
-				elementRows := sqlmock.NewRows([]string{"id", "name", "created_at"}).
-					AddRow(elementID, "element name", time.Now())
+				elementRows := sqlmock.NewRows([]string{"id", "name", "language_code", "created_at"}).
+					AddRow(elementID, "element name", "en", time.Now())
 				mock.ExpectQuery(regexp.QuoteMeta(`SELECT * FROM "elements"`)).
 					WillReturnRows(elementRows)
 
@@ -183,8 +185,8 @@ func TestFindAll(t *testing.T) {
 					WithArgs(elementID).
 					WillReturnRows(elementCategoryRows)
 
-				categoryRows := sqlmock.NewRows([]string{"id", "name", "created_at"}).
-					AddRow(categoryID, "category name", time.Now())
+				categoryRows := sqlmock.NewRows([]string{"id", "name", "language_code", "created_at"}).
+					AddRow(categoryID, "category name", "en", time.Now())
 				mock.ExpectQuery(regexp.QuoteMeta(`SELECT * FROM "categories" WHERE id IN ($1)`)).
 					WithArgs(categoryID).
 					WillReturnRows(categoryRows)
@@ -197,8 +199,8 @@ func TestFindAll(t *testing.T) {
 				elementID := uuid.New()
 				categoryID := uuid.New()
 
-				elementRows := sqlmock.NewRows([]string{"id", "name", "created_at"}).
-					AddRow(elementID, "element name", time.Now())
+				elementRows := sqlmock.NewRows([]string{"id", "name", "language_code", "created_at"}).
+					AddRow(elementID, "element name", "en", time.Now())
 				mock.ExpectQuery(regexp.QuoteMeta(`SELECT * FROM "elements"`)).
 					WillReturnRows(elementRows)
 
@@ -208,7 +210,7 @@ func TestFindAll(t *testing.T) {
 					WithArgs(elementID).
 					WillReturnRows(elementCategoryRows)
 
-				categoryRows := sqlmock.NewRows([]string{"id", "name", "created_at"})
+				categoryRows := sqlmock.NewRows([]string{"id", "name", "language_code", "created_at"})
 				mock.ExpectQuery(regexp.QuoteMeta(`SELECT * FROM "categories" WHERE id IN ($1)`)).
 					WithArgs(categoryID).
 					WillReturnRows(categoryRows)
@@ -228,8 +230,8 @@ func TestFindAll(t *testing.T) {
 			setup: func(mock sqlmock.Sqlmock) {
 				elementID := uuid.New()
 
-				elementRows := sqlmock.NewRows([]string{"id", "name", "created_at"}).
-					AddRow(elementID, "element name", time.Now())
+				elementRows := sqlmock.NewRows([]string{"id", "name", "language_code", "created_at"}).
+					AddRow(elementID, "element name", "en", time.Now())
 				mock.ExpectQuery(regexp.QuoteMeta(`SELECT * FROM "elements"`)).
 					WillReturnRows(elementRows)
 
@@ -245,8 +247,8 @@ func TestFindAll(t *testing.T) {
 				elementID := uuid.New()
 				categoryID := uuid.New()
 
-				elementRows := sqlmock.NewRows([]string{"id", "name", "created_at"}).
-					AddRow(elementID, "element name", time.Now())
+				elementRows := sqlmock.NewRows([]string{"id", "name", "language_code", "created_at"}).
+					AddRow(elementID, "element name", "en", time.Now())
 				mock.ExpectQuery(regexp.QuoteMeta(`SELECT * FROM "elements"`)).
 					WillReturnRows(elementRows)
 

@@ -14,6 +14,7 @@ import (
 	time "time"
 
 	category "github.com/qkitzero/combination-service/internal/domain/category"
+	language "github.com/qkitzero/combination-service/internal/domain/language"
 	gomock "go.uber.org/mock/gomock"
 )
 
@@ -67,6 +68,20 @@ func (m *MockCategory) ID() category.CategoryID {
 func (mr *MockCategoryMockRecorder) ID() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ID", reflect.TypeOf((*MockCategory)(nil).ID))
+}
+
+// Language mocks base method.
+func (m *MockCategory) Language() language.Language {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Language")
+	ret0, _ := ret[0].(language.Language)
+	return ret0
+}
+
+// Language indicates an expected call of Language.
+func (mr *MockCategoryMockRecorder) Language() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Language", reflect.TypeOf((*MockCategory)(nil).Language))
 }
 
 // Name mocks base method.

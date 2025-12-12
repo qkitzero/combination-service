@@ -19,9 +19,10 @@ func NewCategoryRepository(db *gorm.DB) category.CategoryRepository {
 func (r *categoryRepository) Create(c category.Category) error {
 	return r.db.Transaction(func(tx *gorm.DB) error {
 		categoryModel := CategoryModel{
-			ID:        c.ID(),
-			Name:      c.Name(),
-			CreatedAt: c.CreatedAt(),
+			ID:           c.ID(),
+			Name:         c.Name(),
+			LanguageCode: c.Language(),
+			CreatedAt:    c.CreatedAt(),
 		}
 
 		if err := tx.Create(&categoryModel).Error; err != nil {
@@ -45,6 +46,7 @@ func (r *categoryRepository) FindByID(id category.CategoryID) (category.Category
 	return category.NewCategory(
 		categoryModel.ID,
 		categoryModel.Name,
+		categoryModel.LanguageCode,
 		categoryModel.CreatedAt,
 	), nil
 }
@@ -61,6 +63,7 @@ func (r *categoryRepository) FindAll() ([]category.Category, error) {
 		categories[i] = category.NewCategory(
 			m.ID,
 			m.Name,
+			m.LanguageCode,
 			m.CreatedAt,
 		)
 	}
@@ -84,6 +87,7 @@ func (r *categoryRepository) FindAllByIDs(ids []category.CategoryID) ([]category
 		categories[i] = category.NewCategory(
 			m.ID,
 			m.Name,
+			m.LanguageCode,
 			m.CreatedAt,
 		)
 	}
