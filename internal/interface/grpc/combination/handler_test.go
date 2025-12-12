@@ -11,6 +11,7 @@ import (
 	combinationv1 "github.com/qkitzero/combination-service/gen/go/combination/v1"
 	"github.com/qkitzero/combination-service/internal/domain/category"
 	"github.com/qkitzero/combination-service/internal/domain/element"
+	"github.com/qkitzero/combination-service/internal/domain/language"
 	mocksappcombination "github.com/qkitzero/combination-service/mocks/application/combination"
 	mockscategory "github.com/qkitzero/combination-service/mocks/domain/category"
 	mockselement "github.com/qkitzero/combination-service/mocks/domain/element"
@@ -23,11 +24,12 @@ func TestCreateElement(t *testing.T) {
 		success          bool
 		ctx              context.Context
 		elementName      string
+		languageCode     string
 		categoryIDs      []string
 		createElementErr error
 	}{
-		{"success create element", true, context.Background(), "test element", []string{"91b349ab-2ffc-45cd-adab-61d248b3f9d9"}, nil},
-		{"failure create element error", false, context.Background(), "test element", []string{"91b349ab-2ffc-45cd-adab-61d248b3f9d9"}, fmt.Errorf("create element error")},
+		{"success create element", true, context.Background(), "test element", "en", []string{"91b349ab-2ffc-45cd-adab-61d248b3f9d9"}, nil},
+		{"failure create element error", false, context.Background(), "test element", "en", []string{"91b349ab-2ffc-45cd-adab-61d248b3f9d9"}, fmt.Errorf("create element error")},
 	}
 	for _, tt := range tests {
 		tt := tt
@@ -40,13 +42,14 @@ func TestCreateElement(t *testing.T) {
 			mockElement := mockselement.NewMockElement(ctrl)
 			mockElement.EXPECT().ID().Return(element.ElementID{UUID: uuid.New()}).AnyTimes()
 			mockCombinationUsecase := mocksappcombination.NewMockCombinationUsecase(ctrl)
-			mockCombinationUsecase.EXPECT().CreateElement(tt.elementName, tt.categoryIDs).Return(mockElement, tt.createElementErr).AnyTimes()
+			mockCombinationUsecase.EXPECT().CreateElement(tt.elementName, tt.languageCode, tt.categoryIDs).Return(mockElement, tt.createElementErr).AnyTimes()
 
 			combinationHandler := NewCombinationHandler(mockCombinationUsecase)
 
 			req := &combinationv1.CreateElementRequest{
-				Name:        tt.elementName,
-				CategoryIds: tt.categoryIDs,
+				Name:         tt.elementName,
+				LanguageCode: tt.languageCode,
+				CategoryIds:  tt.categoryIDs,
 			}
 
 			_, err := combinationHandler.CreateElement(tt.ctx, req)
@@ -82,10 +85,12 @@ func TestListElements(t *testing.T) {
 			mockCategory := mockscategory.NewMockCategory(ctrl)
 			mockCategory.EXPECT().ID().Return(category.CategoryID{UUID: uuid.New()}).AnyTimes()
 			mockCategory.EXPECT().Name().Return(category.Name("test category")).AnyTimes()
+			mockCategory.EXPECT().Language().Return(language.Language("en")).AnyTimes()
 			mockElement := mockselement.NewMockElement(ctrl)
 			mockElement.EXPECT().ID().Return(element.ElementID{UUID: uuid.New()}).AnyTimes()
 			mockElement.EXPECT().Name().Return(element.Name("test element")).AnyTimes()
 			mockElement.EXPECT().Categories().Return([]category.Category{mockCategory}).AnyTimes()
+			mockElement.EXPECT().Language().Return(language.Language("en")).AnyTimes()
 			mockCombinationUsecase := mocksappcombination.NewMockCombinationUsecase(ctrl)
 			mockCombinationUsecase.EXPECT().ListElements().Return([]element.Element{mockElement}, tt.listElementsErr).AnyTimes()
 
@@ -111,10 +116,11 @@ func TestCreateCategory(t *testing.T) {
 		success           bool
 		ctx               context.Context
 		categoryName      string
+		languageCode      string
 		createCategoryErr error
 	}{
-		{"success create category", true, context.Background(), "test category", nil},
-		{"failure create category error", false, context.Background(), "test category", fmt.Errorf("create category error")},
+		{"success create category", true, context.Background(), "test category", "en", nil},
+		{"failure create category error", false, context.Background(), "test category", "en", fmt.Errorf("create category error")},
 	}
 	for _, tt := range tests {
 		tt := tt
@@ -127,12 +133,13 @@ func TestCreateCategory(t *testing.T) {
 			mockCategory := mockscategory.NewMockCategory(ctrl)
 			mockCategory.EXPECT().ID().Return(category.CategoryID{UUID: uuid.New()}).AnyTimes()
 			mockCombinationUsecase := mocksappcombination.NewMockCombinationUsecase(ctrl)
-			mockCombinationUsecase.EXPECT().CreateCategory(tt.categoryName).Return(mockCategory, tt.createCategoryErr).AnyTimes()
+			mockCombinationUsecase.EXPECT().CreateCategory(tt.categoryName, tt.languageCode).Return(mockCategory, tt.createCategoryErr).AnyTimes()
 
 			combinationHandler := NewCombinationHandler(mockCombinationUsecase)
 
 			req := &combinationv1.CreateCategoryRequest{
-				Name: tt.categoryName,
+				Name:         tt.categoryName,
+				LanguageCode: tt.languageCode,
 			}
 
 			_, err := combinationHandler.CreateCategory(tt.ctx, req)
@@ -168,6 +175,7 @@ func TestListCategories(t *testing.T) {
 			mockCategory := mockscategory.NewMockCategory(ctrl)
 			mockCategory.EXPECT().ID().Return(category.CategoryID{UUID: uuid.New()}).AnyTimes()
 			mockCategory.EXPECT().Name().Return(category.Name("test category")).AnyTimes()
+			mockCategory.EXPECT().Language().Return(language.Language("en")).AnyTimes()
 			mockCombinationUsecase := mocksappcombination.NewMockCombinationUsecase(ctrl)
 			mockCombinationUsecase.EXPECT().ListCategories().Return([]category.Category{mockCategory}, tt.listCategoriesErr).AnyTimes()
 
@@ -209,10 +217,12 @@ func TestGetCombination(t *testing.T) {
 			mockCategory := mockscategory.NewMockCategory(ctrl)
 			mockCategory.EXPECT().ID().Return(category.CategoryID{UUID: uuid.New()}).AnyTimes()
 			mockCategory.EXPECT().Name().Return(category.Name("test category")).AnyTimes()
+			mockCategory.EXPECT().Language().Return(language.Language("en")).AnyTimes()
 			mockElement := mockselement.NewMockElement(ctrl)
 			mockElement.EXPECT().ID().Return(element.ElementID{UUID: uuid.New()}).AnyTimes()
 			mockElement.EXPECT().Name().Return(element.Name("test element")).AnyTimes()
 			mockElement.EXPECT().Categories().Return([]category.Category{mockCategory}).AnyTimes()
+			mockElement.EXPECT().Language().Return(language.Language("en")).AnyTimes()
 			mockCombinationUsecase := mocksappcombination.NewMockCombinationUsecase(ctrl)
 			mockCombinationUsecase.EXPECT().GetCombination(int(tt.count)).Return([]element.Element{mockElement, mockElement, mockElement}, tt.getCombinationErr).AnyTimes()
 

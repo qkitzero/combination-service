@@ -7,6 +7,7 @@ import (
 
 	"github.com/qkitzero/combination-service/internal/domain/category"
 	"github.com/qkitzero/combination-service/internal/domain/element"
+	"github.com/qkitzero/combination-service/internal/domain/language"
 )
 
 func TestRandomStrategySelect(t *testing.T) {
@@ -16,9 +17,13 @@ func TestRandomStrategySelect(t *testing.T) {
 	for i := range numElements {
 		elementName, err := element.NewName(fmt.Sprintf("element%d", i+1))
 		if err != nil {
-			t.Fatalf("failed to create element name: %v", err)
+			t.Fatalf("failed to new element name: %v", err)
 		}
-		elements[i] = element.NewElement(element.NewElementID(), elementName, []category.Category{}, time.Now())
+		elementLanguage, err := language.NewLanguage("en")
+		if err != nil {
+			t.Fatalf("failed to new element language: %v", err)
+		}
+		elements[i] = element.NewElement(element.NewElementID(), elementName, elementLanguage, []category.Category{}, time.Now())
 	}
 	tests := []struct {
 		name     string

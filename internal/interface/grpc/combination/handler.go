@@ -19,7 +19,7 @@ func NewCombinationHandler(combinationUsecase appcombination.CombinationUsecase)
 }
 
 func (h *CombinationHandler) CreateElement(ctx context.Context, req *combinationv1.CreateElementRequest) (*combinationv1.CreateElementResponse, error) {
-	element, err := h.combinationUsecase.CreateElement(req.GetName(), req.GetCategoryIds())
+	element, err := h.combinationUsecase.CreateElement(req.GetName(), req.GetLanguageCode(), req.GetCategoryIds())
 	if err != nil {
 		return nil, err
 	}
@@ -40,15 +40,17 @@ func (h *CombinationHandler) ListElements(ctx context.Context, req *combinationv
 		pbCategories := make([]*combinationv1.Category, 0, len(element.Categories()))
 		for _, category := range element.Categories() {
 			pbCategory := &combinationv1.Category{
-				Id:   category.ID().String(),
-				Name: category.Name().String(),
+				Id:           category.ID().String(),
+				LanguageCode: category.Language().String(),
+				Name:         category.Name().String(),
 			}
 			pbCategories = append(pbCategories, pbCategory)
 		}
 		pbElement := &combinationv1.Element{
-			Id:         element.ID().String(),
-			Name:       element.Name().String(),
-			Categories: pbCategories,
+			Id:           element.ID().String(),
+			Name:         element.Name().String(),
+			Categories:   pbCategories,
+			LanguageCode: element.Language().String(),
 		}
 		pbElements = append(pbElements, pbElement)
 	}
@@ -59,7 +61,7 @@ func (h *CombinationHandler) ListElements(ctx context.Context, req *combinationv
 }
 
 func (h *CombinationHandler) CreateCategory(ctx context.Context, req *combinationv1.CreateCategoryRequest) (*combinationv1.CreateCategoryResponse, error) {
-	category, err := h.combinationUsecase.CreateCategory(req.GetName())
+	category, err := h.combinationUsecase.CreateCategory(req.GetName(), req.GetLanguageCode())
 	if err != nil {
 		return nil, err
 	}
@@ -78,8 +80,9 @@ func (h *CombinationHandler) ListCategories(ctx context.Context, req *combinatio
 	pbCategories := make([]*combinationv1.Category, 0, len(categories))
 	for _, category := range categories {
 		pbCategory := &combinationv1.Category{
-			Id:   category.ID().String(),
-			Name: category.Name().String(),
+			Id:           category.ID().String(),
+			Name:         category.Name().String(),
+			LanguageCode: category.Language().String(),
 		}
 		pbCategories = append(pbCategories, pbCategory)
 	}
@@ -100,15 +103,17 @@ func (h *CombinationHandler) GetCombination(ctx context.Context, req *combinatio
 		pbCategories := make([]*combinationv1.Category, 0, len(element.Categories()))
 		for _, category := range element.Categories() {
 			pbCategory := &combinationv1.Category{
-				Id:   category.ID().String(),
-				Name: category.Name().String(),
+				Id:           category.ID().String(),
+				Name:         category.Name().String(),
+				LanguageCode: category.Language().String(),
 			}
 			pbCategories = append(pbCategories, pbCategory)
 		}
 		pbElement := &combinationv1.Element{
-			Id:         element.ID().String(),
-			Name:       element.Name().String(),
-			Categories: pbCategories,
+			Id:           element.ID().String(),
+			Name:         element.Name().String(),
+			Categories:   pbCategories,
+			LanguageCode: element.Language().String(),
 		}
 		pbElements = append(pbElements, pbElement)
 	}

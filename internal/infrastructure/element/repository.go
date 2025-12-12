@@ -20,9 +20,10 @@ func NewElementRepository(db *gorm.DB) element.ElementRepository {
 func (r *elementRepository) Create(e element.Element) error {
 	return r.db.Transaction(func(tx *gorm.DB) error {
 		elementModel := ElementModel{
-			ID:        e.ID(),
-			Name:      e.Name(),
-			CreatedAt: e.CreatedAt(),
+			ID:           e.ID(),
+			Name:         e.Name(),
+			LanguageCode: e.Language(),
+			CreatedAt:    e.CreatedAt(),
 		}
 
 		if err := tx.Create(&elementModel).Error; err != nil {
@@ -96,6 +97,7 @@ func (r *elementRepository) FindAll() ([]element.Element, error) {
 			category.NewCategory(
 				c.ID,
 				c.Name,
+				c.LanguageCode,
 				c.CreatedAt,
 			),
 		)
@@ -106,6 +108,7 @@ func (r *elementRepository) FindAll() ([]element.Element, error) {
 		elements[i] = element.NewElement(
 			e.ID,
 			e.Name,
+			e.LanguageCode,
 			elementCategories[e.ID],
 			e.CreatedAt,
 		)

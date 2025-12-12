@@ -15,19 +15,21 @@ import (
 func TestCreateElement(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
-		name        string
-		success     bool
-		elementName string
-		categoryIDs []string
-		createErr   error
-		findByIDErr error
+		name         string
+		success      bool
+		elementName  string
+		languageCode string
+		categoryIDs  []string
+		createErr    error
+		findByIDErr  error
 	}{
-		{"success create element", true, "test element", []string{"91b349ab-2ffc-45cd-adab-61d248b3f9d9"}, nil, nil},
-		{"success create element no category", true, "test element", []string{}, nil, nil},
-		{"failure empty name", false, "", []string{"91b349ab-2ffc-45cd-adab-61d248b3f9d9"}, nil, nil},
-		{"failure create error", false, "test element", []string{"91b349ab-2ffc-45cd-adab-61d248b3f9d9"}, errors.New("create error"), nil},
-		{"failure invalid category id", false, "test element", []string{"0123456789"}, nil, nil},
-		{"failure find by id error", false, "test element", []string{"91b349ab-2ffc-45cd-adab-61d248b3f9d9"}, nil, errors.New("find by id error")},
+		{"success create element", true, "test element", "en", []string{"91b349ab-2ffc-45cd-adab-61d248b3f9d9"}, nil, nil},
+		{"success create element no category", true, "test element", "en", []string{}, nil, nil},
+		{"failure empty name", false, "", "en", []string{"91b349ab-2ffc-45cd-adab-61d248b3f9d9"}, nil, nil},
+		{"failure empty language code", false, "test element", "", []string{"91b349ab-2ffc-45cd-adab-61d248b3f9d9"}, nil, nil},
+		{"failure create error", false, "test element", "en", []string{"91b349ab-2ffc-45cd-adab-61d248b3f9d9"}, errors.New("create error"), nil},
+		{"failure invalid category id", false, "test element", "en", []string{"0123456789"}, nil, nil},
+		{"failure find by id error", false, "test element", "en", []string{"91b349ab-2ffc-45cd-adab-61d248b3f9d9"}, nil, errors.New("find by id error")},
 	}
 	for _, tt := range tests {
 		tt := tt
@@ -49,7 +51,7 @@ func TestCreateElement(t *testing.T) {
 
 			combinationUsecase := NewCombinationUsecase(mockElementRepository, mockCategoryRepository)
 
-			_, err := combinationUsecase.CreateElement(tt.elementName, tt.categoryIDs)
+			_, err := combinationUsecase.CreateElement(tt.elementName, tt.languageCode, tt.categoryIDs)
 			if tt.success && err != nil {
 				t.Errorf("expected no error, but got %v", err)
 			}
@@ -99,11 +101,13 @@ func TestCreateCategory(t *testing.T) {
 		name         string
 		success      bool
 		categoryName string
+		languageCode string
 		createErr    error
 	}{
-		{"success create category", true, "test category", nil},
-		{"failure empty name", false, "", nil},
-		{"failure create error", false, "test category", errors.New("create error")},
+		{"success create category", true, "test category", "en", nil},
+		{"failure empty name", false, "", "en", nil},
+		{"failure empty language code", false, "test category", "", nil},
+		{"failure create error", false, "test category", "en", errors.New("create error")},
 	}
 	for _, tt := range tests {
 		tt := tt
@@ -119,7 +123,7 @@ func TestCreateCategory(t *testing.T) {
 
 			combinationUsecase := NewCombinationUsecase(mockElementRepository, mockCategoryRepository)
 
-			_, err := combinationUsecase.CreateCategory(tt.categoryName)
+			_, err := combinationUsecase.CreateCategory(tt.categoryName, tt.languageCode)
 			if tt.success && err != nil {
 				t.Errorf("expected no error, but got %v", err)
 			}
