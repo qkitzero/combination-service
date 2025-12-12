@@ -19,7 +19,11 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	CombinationService_CreateElement_FullMethodName = "/combination.v1.CombinationService/CreateElement"
+	CombinationService_CreateElement_FullMethodName  = "/combination.v1.CombinationService/CreateElement"
+	CombinationService_ListElements_FullMethodName   = "/combination.v1.CombinationService/ListElements"
+	CombinationService_CreateCategory_FullMethodName = "/combination.v1.CombinationService/CreateCategory"
+	CombinationService_ListCategories_FullMethodName = "/combination.v1.CombinationService/ListCategories"
+	CombinationService_GetCombination_FullMethodName = "/combination.v1.CombinationService/GetCombination"
 )
 
 // CombinationServiceClient is the client API for CombinationService service.
@@ -27,6 +31,10 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type CombinationServiceClient interface {
 	CreateElement(ctx context.Context, in *CreateElementRequest, opts ...grpc.CallOption) (*CreateElementResponse, error)
+	ListElements(ctx context.Context, in *ListElementsRequest, opts ...grpc.CallOption) (*ListElementsResponse, error)
+	CreateCategory(ctx context.Context, in *CreateCategoryRequest, opts ...grpc.CallOption) (*CreateCategoryResponse, error)
+	ListCategories(ctx context.Context, in *ListCategoriesRequest, opts ...grpc.CallOption) (*ListCategoriesResponse, error)
+	GetCombination(ctx context.Context, in *GetCombinationRequest, opts ...grpc.CallOption) (*GetCombinationResponse, error)
 }
 
 type combinationServiceClient struct {
@@ -47,11 +55,55 @@ func (c *combinationServiceClient) CreateElement(ctx context.Context, in *Create
 	return out, nil
 }
 
+func (c *combinationServiceClient) ListElements(ctx context.Context, in *ListElementsRequest, opts ...grpc.CallOption) (*ListElementsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListElementsResponse)
+	err := c.cc.Invoke(ctx, CombinationService_ListElements_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *combinationServiceClient) CreateCategory(ctx context.Context, in *CreateCategoryRequest, opts ...grpc.CallOption) (*CreateCategoryResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateCategoryResponse)
+	err := c.cc.Invoke(ctx, CombinationService_CreateCategory_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *combinationServiceClient) ListCategories(ctx context.Context, in *ListCategoriesRequest, opts ...grpc.CallOption) (*ListCategoriesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListCategoriesResponse)
+	err := c.cc.Invoke(ctx, CombinationService_ListCategories_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *combinationServiceClient) GetCombination(ctx context.Context, in *GetCombinationRequest, opts ...grpc.CallOption) (*GetCombinationResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetCombinationResponse)
+	err := c.cc.Invoke(ctx, CombinationService_GetCombination_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // CombinationServiceServer is the server API for CombinationService service.
 // All implementations must embed UnimplementedCombinationServiceServer
 // for forward compatibility.
 type CombinationServiceServer interface {
 	CreateElement(context.Context, *CreateElementRequest) (*CreateElementResponse, error)
+	ListElements(context.Context, *ListElementsRequest) (*ListElementsResponse, error)
+	CreateCategory(context.Context, *CreateCategoryRequest) (*CreateCategoryResponse, error)
+	ListCategories(context.Context, *ListCategoriesRequest) (*ListCategoriesResponse, error)
+	GetCombination(context.Context, *GetCombinationRequest) (*GetCombinationResponse, error)
 	mustEmbedUnimplementedCombinationServiceServer()
 }
 
@@ -64,6 +116,18 @@ type UnimplementedCombinationServiceServer struct{}
 
 func (UnimplementedCombinationServiceServer) CreateElement(context.Context, *CreateElementRequest) (*CreateElementResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateElement not implemented")
+}
+func (UnimplementedCombinationServiceServer) ListElements(context.Context, *ListElementsRequest) (*ListElementsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListElements not implemented")
+}
+func (UnimplementedCombinationServiceServer) CreateCategory(context.Context, *CreateCategoryRequest) (*CreateCategoryResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateCategory not implemented")
+}
+func (UnimplementedCombinationServiceServer) ListCategories(context.Context, *ListCategoriesRequest) (*ListCategoriesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListCategories not implemented")
+}
+func (UnimplementedCombinationServiceServer) GetCombination(context.Context, *GetCombinationRequest) (*GetCombinationResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetCombination not implemented")
 }
 func (UnimplementedCombinationServiceServer) mustEmbedUnimplementedCombinationServiceServer() {}
 func (UnimplementedCombinationServiceServer) testEmbeddedByValue()                            {}
@@ -104,6 +168,78 @@ func _CombinationService_CreateElement_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _CombinationService_ListElements_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListElementsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CombinationServiceServer).ListElements(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CombinationService_ListElements_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CombinationServiceServer).ListElements(ctx, req.(*ListElementsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _CombinationService_CreateCategory_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateCategoryRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CombinationServiceServer).CreateCategory(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CombinationService_CreateCategory_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CombinationServiceServer).CreateCategory(ctx, req.(*CreateCategoryRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _CombinationService_ListCategories_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListCategoriesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CombinationServiceServer).ListCategories(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CombinationService_ListCategories_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CombinationServiceServer).ListCategories(ctx, req.(*ListCategoriesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _CombinationService_GetCombination_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetCombinationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CombinationServiceServer).GetCombination(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CombinationService_GetCombination_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CombinationServiceServer).GetCombination(ctx, req.(*GetCombinationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // CombinationService_ServiceDesc is the grpc.ServiceDesc for CombinationService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -114,6 +250,22 @@ var CombinationService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateElement",
 			Handler:    _CombinationService_CreateElement_Handler,
+		},
+		{
+			MethodName: "ListElements",
+			Handler:    _CombinationService_ListElements_Handler,
+		},
+		{
+			MethodName: "CreateCategory",
+			Handler:    _CombinationService_CreateCategory_Handler,
+		},
+		{
+			MethodName: "ListCategories",
+			Handler:    _CombinationService_ListCategories_Handler,
+		},
+		{
+			MethodName: "GetCombination",
+			Handler:    _CombinationService_GetCombination_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

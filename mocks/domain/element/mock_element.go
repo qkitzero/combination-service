@@ -13,7 +13,9 @@ import (
 	reflect "reflect"
 	time "time"
 
+	category "github.com/qkitzero/combination-service/internal/domain/category"
 	element "github.com/qkitzero/combination-service/internal/domain/element"
+	language "github.com/qkitzero/combination-service/internal/domain/language"
 	gomock "go.uber.org/mock/gomock"
 )
 
@@ -39,6 +41,20 @@ func NewMockElement(ctrl *gomock.Controller) *MockElement {
 // EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockElement) EXPECT() *MockElementMockRecorder {
 	return m.recorder
+}
+
+// Categories mocks base method.
+func (m *MockElement) Categories() []category.Category {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Categories")
+	ret0, _ := ret[0].([]category.Category)
+	return ret0
+}
+
+// Categories indicates an expected call of Categories.
+func (mr *MockElementMockRecorder) Categories() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Categories", reflect.TypeOf((*MockElement)(nil).Categories))
 }
 
 // CreatedAt mocks base method.
@@ -67,6 +83,20 @@ func (m *MockElement) ID() element.ElementID {
 func (mr *MockElementMockRecorder) ID() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ID", reflect.TypeOf((*MockElement)(nil).ID))
+}
+
+// Language mocks base method.
+func (m *MockElement) Language() language.Language {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Language")
+	ret0, _ := ret[0].(language.Language)
+	return ret0
+}
+
+// Language indicates an expected call of Language.
+func (mr *MockElementMockRecorder) Language() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Language", reflect.TypeOf((*MockElement)(nil).Language))
 }
 
 // Name mocks base method.

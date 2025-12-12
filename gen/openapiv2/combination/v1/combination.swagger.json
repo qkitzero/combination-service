@@ -16,7 +16,110 @@
     "application/json"
   ],
   "paths": {
-    "/v1/element": {
+    "/v1/categories": {
+      "get": {
+        "operationId": "CombinationService_ListCategories",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListCategoriesResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "CombinationService"
+        ]
+      },
+      "post": {
+        "operationId": "CombinationService_CreateCategory",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CreateCategoryResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1CreateCategoryRequest"
+            }
+          }
+        ],
+        "tags": [
+          "CombinationService"
+        ]
+      }
+    },
+    "/v1/combinations": {
+      "get": {
+        "operationId": "CombinationService_GetCombination",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetCombinationResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "count",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "CombinationService"
+        ]
+      }
+    },
+    "/v1/elements": {
+      "get": {
+        "operationId": "CombinationService_ListElements",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListElementsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "CombinationService"
+        ]
+      },
       "post": {
         "operationId": "CombinationService_CreateElement",
         "responses": {
@@ -78,10 +181,52 @@
         }
       }
     },
+    "v1Category": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "languageCode": {
+          "type": "string"
+        }
+      }
+    },
+    "v1CreateCategoryRequest": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "languageCode": {
+          "type": "string"
+        }
+      }
+    },
+    "v1CreateCategoryResponse": {
+      "type": "object",
+      "properties": {
+        "categoryId": {
+          "type": "string"
+        }
+      }
+    },
     "v1CreateElementRequest": {
       "type": "object",
       "properties": {
         "name": {
+          "type": "string"
+        },
+        "categoryIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "languageCode": {
           "type": "string"
         }
       }
@@ -91,6 +236,63 @@
       "properties": {
         "elementId": {
           "type": "string"
+        }
+      }
+    },
+    "v1Element": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "categories": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Category"
+          }
+        },
+        "languageCode": {
+          "type": "string"
+        }
+      }
+    },
+    "v1GetCombinationResponse": {
+      "type": "object",
+      "properties": {
+        "elements": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Element"
+          }
+        }
+      }
+    },
+    "v1ListCategoriesResponse": {
+      "type": "object",
+      "properties": {
+        "categories": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Category"
+          }
+        }
+      }
+    },
+    "v1ListElementsResponse": {
+      "type": "object",
+      "properties": {
+        "elements": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Element"
+          }
         }
       }
     }

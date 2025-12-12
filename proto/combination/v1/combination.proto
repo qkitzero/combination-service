@@ -9,16 +9,75 @@ option go_package = "github.com/qkitzero/combination-service/gen/go/combination/
 service CombinationService {
   rpc CreateElement(CreateElementRequest) returns (CreateElementResponse) {
     option (google.api.http) = {
-      post: "/v1/element"
+      post: "/v1/elements"
       body: "*"
     };
   }
+  rpc ListElements(ListElementsRequest) returns (ListElementsResponse) {
+    option (google.api.http) = {get: "/v1/elements"};
+  }
+  rpc CreateCategory(CreateCategoryRequest) returns (CreateCategoryResponse) {
+    option (google.api.http) = {
+      post: "/v1/categories"
+      body: "*"
+    };
+  }
+  rpc ListCategories(ListCategoriesRequest) returns (ListCategoriesResponse) {
+    option (google.api.http) = {get: "/v1/categories"};
+  }
+  rpc GetCombination(GetCombinationRequest) returns (GetCombinationResponse) {
+    option (google.api.http) = {get: "/v1/combinations"};
+  }
+}
+
+message Element {
+  string id = 1;
+  string name = 2;
+  repeated Category categories = 3;
+  string language_code = 4;
+}
+
+message Category {
+  string id = 1;
+  string name = 2;
+  string language_code = 3;
 }
 
 message CreateElementRequest {
   string name = 1;
+  repeated string category_ids = 2;
+  string language_code = 3;
 }
 
 message CreateElementResponse {
   string element_id = 1;
+}
+
+message ListElementsRequest {}
+
+message ListElementsResponse {
+  repeated Element elements = 1;
+}
+
+message CreateCategoryRequest {
+  string name = 1;
+  string language_code = 2;
+}
+
+message CreateCategoryResponse {
+  string category_id = 1;
+}
+
+message ListCategoriesRequest {}
+
+message ListCategoriesResponse {
+  repeated Category categories = 1;
+}
+
+message GetCombinationRequest {
+  int32 count = 1;
+}
+
+message GetCombinationResponse {
+  repeated Element elements = 1;
 }

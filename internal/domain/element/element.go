@@ -2,18 +2,25 @@ package element
 
 import (
 	"time"
+
+	"github.com/qkitzero/combination-service/internal/domain/category"
+	"github.com/qkitzero/combination-service/internal/domain/language"
 )
 
 type Element interface {
 	ID() ElementID
 	Name() Name
+	Language() language.Language
+	Categories() []category.Category
 	CreatedAt() time.Time
 }
 
 type element struct {
-	id        ElementID
-	name      Name
-	createdAt time.Time
+	id         ElementID
+	name       Name
+	language   language.Language
+	categories []category.Category
+	createdAt  time.Time
 }
 
 func (e element) ID() ElementID {
@@ -24,6 +31,16 @@ func (e element) Name() Name {
 	return e.name
 }
 
+func (e element) Language() language.Language {
+	return e.language
+}
+
+func (e element) Categories() []category.Category {
+	c := make([]category.Category, len(e.categories))
+	copy(c, e.categories)
+	return c
+}
+
 func (e element) CreatedAt() time.Time {
 	return e.createdAt
 }
@@ -31,11 +48,15 @@ func (e element) CreatedAt() time.Time {
 func NewElement(
 	id ElementID,
 	name Name,
+	language language.Language,
+	categories []category.Category,
 	createdAt time.Time,
 ) Element {
 	return &element{
-		id:        id,
-		name:      name,
-		createdAt: createdAt,
+		id:         id,
+		name:       name,
+		language:   language,
+		categories: categories,
+		createdAt:  createdAt,
 	}
 }

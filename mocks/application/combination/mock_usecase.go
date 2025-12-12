@@ -12,6 +12,7 @@ package mocks
 import (
 	reflect "reflect"
 
+	category "github.com/qkitzero/combination-service/internal/domain/category"
 	element "github.com/qkitzero/combination-service/internal/domain/element"
 	gomock "go.uber.org/mock/gomock"
 )
@@ -40,17 +41,77 @@ func (m *MockCombinationUsecase) EXPECT() *MockCombinationUsecaseMockRecorder {
 	return m.recorder
 }
 
-// CreateElement mocks base method.
-func (m *MockCombinationUsecase) CreateElement(name string) (element.Element, error) {
+// CreateCategory mocks base method.
+func (m *MockCombinationUsecase) CreateCategory(name, languageCode string) (category.Category, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CreateElement", name)
+	ret := m.ctrl.Call(m, "CreateCategory", name, languageCode)
+	ret0, _ := ret[0].(category.Category)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateCategory indicates an expected call of CreateCategory.
+func (mr *MockCombinationUsecaseMockRecorder) CreateCategory(name, languageCode any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateCategory", reflect.TypeOf((*MockCombinationUsecase)(nil).CreateCategory), name, languageCode)
+}
+
+// CreateElement mocks base method.
+func (m *MockCombinationUsecase) CreateElement(name, languageCode string, categoryIDs []string) (element.Element, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateElement", name, languageCode, categoryIDs)
 	ret0, _ := ret[0].(element.Element)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // CreateElement indicates an expected call of CreateElement.
-func (mr *MockCombinationUsecaseMockRecorder) CreateElement(name any) *gomock.Call {
+func (mr *MockCombinationUsecaseMockRecorder) CreateElement(name, languageCode, categoryIDs any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateElement", reflect.TypeOf((*MockCombinationUsecase)(nil).CreateElement), name)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateElement", reflect.TypeOf((*MockCombinationUsecase)(nil).CreateElement), name, languageCode, categoryIDs)
+}
+
+// GetCombination mocks base method.
+func (m *MockCombinationUsecase) GetCombination(count int) ([]element.Element, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetCombination", count)
+	ret0, _ := ret[0].([]element.Element)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetCombination indicates an expected call of GetCombination.
+func (mr *MockCombinationUsecaseMockRecorder) GetCombination(count any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCombination", reflect.TypeOf((*MockCombinationUsecase)(nil).GetCombination), count)
+}
+
+// ListCategories mocks base method.
+func (m *MockCombinationUsecase) ListCategories() ([]category.Category, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListCategories")
+	ret0, _ := ret[0].([]category.Category)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListCategories indicates an expected call of ListCategories.
+func (mr *MockCombinationUsecaseMockRecorder) ListCategories() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListCategories", reflect.TypeOf((*MockCombinationUsecase)(nil).ListCategories))
+}
+
+// ListElements mocks base method.
+func (m *MockCombinationUsecase) ListElements() ([]element.Element, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListElements")
+	ret0, _ := ret[0].([]element.Element)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListElements indicates an expected call of ListElements.
+func (mr *MockCombinationUsecaseMockRecorder) ListElements() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListElements", reflect.TypeOf((*MockCombinationUsecase)(nil).ListElements))
 }
