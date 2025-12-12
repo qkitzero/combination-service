@@ -34,16 +34,19 @@ message Element {
   string id = 1;
   string name = 2;
   repeated Category categories = 3;
+  string language_code = 4;
 }
 
 message Category {
   string id = 1;
   string name = 2;
+  string language_code = 3;
 }
 
 message CreateElementRequest {
   string name = 1;
   repeated string category_ids = 2;
+  string language_code = 3;
 }
 
 message CreateElementResponse {
@@ -58,6 +61,7 @@ message ListElementsResponse {
 
 message CreateCategoryRequest {
   string name = 1;
+  string language_code = 2;
 }
 
 message CreateCategoryResponse {
