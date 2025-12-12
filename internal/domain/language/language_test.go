@@ -11,8 +11,8 @@ func TestNewLanguage(t *testing.T) {
 		success      bool
 		languageCode string
 	}{
-		{"success new language", true, "en"},
-		{"success new language", true, "ja"},
+		{"success new language en", true, "en"},
+		{"success new language ja", true, "ja"},
 		{"failure empty language code", false, ""},
 		{"failure invalid language code", false, "english"},
 	}

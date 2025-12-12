@@ -181,7 +181,7 @@ func TestFindAll(t *testing.T) {
 			name:    "success find all categories",
 			success: true,
 			setup: func(mock sqlmock.Sqlmock) {
-				categoryRows := sqlmock.NewRows([]string{"id", "name", "languages_code", "created_at"}).
+				categoryRows := sqlmock.NewRows([]string{"id", "name", "language_code", "created_at"}).
 					AddRow(uuid.New(), "test category", "en", time.Now())
 				mock.ExpectQuery(regexp.QuoteMeta(`SELECT * FROM "categories"`)).
 					WillReturnRows(categoryRows)
