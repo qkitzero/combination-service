@@ -189,6 +189,9 @@
         },
         "name": {
           "type": "string"
+        },
+        "languageCode": {
+          "type": "string"
         }
       }
     },
@@ -196,6 +199,9 @@
       "type": "object",
       "properties": {
         "name": {
+          "type": "string"
+        },
+        "languageCode": {
           "type": "string"
         }
       }
@@ -219,6 +225,9 @@
           "items": {
             "type": "string"
           }
+        },
+        "languageCode": {
+          "type": "string"
         }
       }
     },
@@ -245,6 +254,9 @@
             "type": "object",
             "$ref": "#/definitions/v1Category"
           }
+        },
+        "languageCode": {
+          "type": "string"
         }
       }
     },
