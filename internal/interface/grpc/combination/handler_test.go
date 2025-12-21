@@ -12,6 +12,7 @@ import (
 	"github.com/qkitzero/combination-service/internal/domain/category"
 	"github.com/qkitzero/combination-service/internal/domain/element"
 	"github.com/qkitzero/combination-service/internal/domain/language"
+	mocksappauth "github.com/qkitzero/combination-service/mocks/application/auth"
 	mocksappcombination "github.com/qkitzero/combination-service/mocks/application/combination"
 	mockscategory "github.com/qkitzero/combination-service/mocks/domain/category"
 	mockselement "github.com/qkitzero/combination-service/mocks/domain/element"
@@ -26,10 +27,12 @@ func TestCreateElement(t *testing.T) {
 		elementName      string
 		languageCode     string
 		categoryIDs      []string
+		verifyTokenErr   error
 		createElementErr error
 	}{
-		{"success create element", true, context.Background(), "test element", "en", []string{"91b349ab-2ffc-45cd-adab-61d248b3f9d9"}, nil},
-		{"failure create element error", false, context.Background(), "test element", "en", []string{"91b349ab-2ffc-45cd-adab-61d248b3f9d9"}, fmt.Errorf("create element error")},
+		{"success create element", true, context.Background(), "test element", "en", []string{"91b349ab-2ffc-45cd-adab-61d248b3f9d9"}, nil, nil},
+		{"failure create element error", false, context.Background(), "test element", "en", []string{"91b349ab-2ffc-45cd-adab-61d248b3f9d9"}, nil, fmt.Errorf("create element error")},
+		{"failure verify token error", false, context.Background(), "test element", "en", []string{"91b349ab-2ffc-45cd-adab-61d248b3f9d9"}, fmt.Errorf("verify token error"), nil},
 	}
 	for _, tt := range tests {
 		tt := tt
@@ -41,10 +44,12 @@ func TestCreateElement(t *testing.T) {
 
 			mockElement := mockselement.NewMockElement(ctrl)
 			mockElement.EXPECT().ID().Return(element.ElementID{UUID: uuid.New()}).AnyTimes()
+			mockAuthUsecase := mocksappauth.NewMockAuthUsecase(ctrl)
+			mockAuthUsecase.EXPECT().VerifyToken(tt.ctx).Return("google-oauth2|000000000000000000000", tt.verifyTokenErr).AnyTimes()
 			mockCombinationUsecase := mocksappcombination.NewMockCombinationUsecase(ctrl)
 			mockCombinationUsecase.EXPECT().CreateElement(tt.elementName, tt.languageCode, tt.categoryIDs).Return(mockElement, tt.createElementErr).AnyTimes()
 
-			combinationHandler := NewCombinationHandler(mockCombinationUsecase)
+			combinationHandler := NewCombinationHandler(mockAuthUsecase, mockCombinationUsecase)
 
 			req := &combinationv1.CreateElementRequest{
 				Name:         tt.elementName,
@@ -69,10 +74,12 @@ func TestListElements(t *testing.T) {
 		name            string
 		success         bool
 		ctx             context.Context
+		verifyTokenErr  error
 		listElementsErr error
 	}{
-		{"success list elements", true, context.Background(), nil},
-		{"failure list elements error", false, context.Background(), fmt.Errorf("list elements error")},
+		{"success list elements", true, context.Background(), nil, nil},
+		{"failure list elements error", false, context.Background(), nil, fmt.Errorf("list elements error")},
+		{"failure verify token error", false, context.Background(), fmt.Errorf("verify token error"), nil},
 	}
 	for _, tt := range tests {
 		tt := tt
@@ -91,10 +98,12 @@ func TestListElements(t *testing.T) {
 			mockElement.EXPECT().Name().Return(element.Name("test element")).AnyTimes()
 			mockElement.EXPECT().Categories().Return([]category.Category{mockCategory}).AnyTimes()
 			mockElement.EXPECT().Language().Return(language.Language("en")).AnyTimes()
+			mockAuthUsecase := mocksappauth.NewMockAuthUsecase(ctrl)
+			mockAuthUsecase.EXPECT().VerifyToken(tt.ctx).Return("google-oauth2|000000000000000000000", tt.verifyTokenErr).AnyTimes()
 			mockCombinationUsecase := mocksappcombination.NewMockCombinationUsecase(ctrl)
 			mockCombinationUsecase.EXPECT().ListElements().Return([]element.Element{mockElement}, tt.listElementsErr).AnyTimes()
 
-			combinationHandler := NewCombinationHandler(mockCombinationUsecase)
+			combinationHandler := NewCombinationHandler(mockAuthUsecase, mockCombinationUsecase)
 
 			req := &combinationv1.ListElementsRequest{}
 
@@ -117,10 +126,12 @@ func TestCreateCategory(t *testing.T) {
 		ctx               context.Context
 		categoryName      string
 		languageCode      string
+		verifyTokenErr    error
 		createCategoryErr error
 	}{
-		{"success create category", true, context.Background(), "test category", "en", nil},
-		{"failure create category error", false, context.Background(), "test category", "en", fmt.Errorf("create category error")},
+		{"success create category", true, context.Background(), "test category", "en", nil, nil},
+		{"failure create category error", false, context.Background(), "test category", "en", nil, fmt.Errorf("create category error")},
+		{"failure verify token error", false, context.Background(), "test category", "en", fmt.Errorf("verify token error"), nil},
 	}
 	for _, tt := range tests {
 		tt := tt
@@ -132,11 +143,12 @@ func TestCreateCategory(t *testing.T) {
 
 			mockCategory := mockscategory.NewMockCategory(ctrl)
 			mockCategory.EXPECT().ID().Return(category.CategoryID{UUID: uuid.New()}).AnyTimes()
+			mockAuthUsecase := mocksappauth.NewMockAuthUsecase(ctrl)
+			mockAuthUsecase.EXPECT().VerifyToken(tt.ctx).Return("google-oauth2|000000000000000000000", tt.verifyTokenErr).AnyTimes()
 			mockCombinationUsecase := mocksappcombination.NewMockCombinationUsecase(ctrl)
 			mockCombinationUsecase.EXPECT().CreateCategory(tt.categoryName, tt.languageCode).Return(mockCategory, tt.createCategoryErr).AnyTimes()
 
-			combinationHandler := NewCombinationHandler(mockCombinationUsecase)
-
+			combinationHandler := NewCombinationHandler(mockAuthUsecase, mockCombinationUsecase)
 			req := &combinationv1.CreateCategoryRequest{
 				Name:         tt.categoryName,
 				LanguageCode: tt.languageCode,
@@ -159,10 +171,12 @@ func TestListCategories(t *testing.T) {
 		name              string
 		success           bool
 		ctx               context.Context
+		verifyTokenErr    error
 		listCategoriesErr error
 	}{
-		{"success list categories", true, context.Background(), nil},
-		{"failure list categories error", false, context.Background(), fmt.Errorf("list categories error")},
+		{"success list categories", true, context.Background(), nil, nil},
+		{"failure list categories error", false, context.Background(), nil, fmt.Errorf("list categories error")},
+		{"failure verify token error", false, context.Background(), fmt.Errorf("verify token error"), nil},
 	}
 	for _, tt := range tests {
 		tt := tt
@@ -176,11 +190,12 @@ func TestListCategories(t *testing.T) {
 			mockCategory.EXPECT().ID().Return(category.CategoryID{UUID: uuid.New()}).AnyTimes()
 			mockCategory.EXPECT().Name().Return(category.Name("test category")).AnyTimes()
 			mockCategory.EXPECT().Language().Return(language.Language("en")).AnyTimes()
+			mockAuthUsecase := mocksappauth.NewMockAuthUsecase(ctrl)
+			mockAuthUsecase.EXPECT().VerifyToken(tt.ctx).Return("google-oauth2|000000000000000000000", tt.verifyTokenErr).AnyTimes()
 			mockCombinationUsecase := mocksappcombination.NewMockCombinationUsecase(ctrl)
 			mockCombinationUsecase.EXPECT().ListCategories().Return([]category.Category{mockCategory}, tt.listCategoriesErr).AnyTimes()
 
-			combinationHandler := NewCombinationHandler(mockCombinationUsecase)
-
+			combinationHandler := NewCombinationHandler(mockAuthUsecase, mockCombinationUsecase)
 			req := &combinationv1.ListCategoriesRequest{}
 
 			_, err := combinationHandler.ListCategories(tt.ctx, req)
@@ -201,10 +216,12 @@ func TestGetCombination(t *testing.T) {
 		success           bool
 		ctx               context.Context
 		count             int32
+		verifyTokenErr    error
 		getCombinationErr error
 	}{
-		{"success get combination", true, context.Background(), 3, nil},
-		{"failure get combination error", false, context.Background(), 3, fmt.Errorf("get combination error")},
+		{"success get combination", true, context.Background(), 3, nil, nil},
+		{"failure get combination error", false, context.Background(), 3, nil, fmt.Errorf("get combination error")},
+		{"failure verify token error", false, context.Background(), 3, fmt.Errorf("verify token error"), nil},
 	}
 	for _, tt := range tests {
 		tt := tt
@@ -223,11 +240,12 @@ func TestGetCombination(t *testing.T) {
 			mockElement.EXPECT().Name().Return(element.Name("test element")).AnyTimes()
 			mockElement.EXPECT().Categories().Return([]category.Category{mockCategory}).AnyTimes()
 			mockElement.EXPECT().Language().Return(language.Language("en")).AnyTimes()
+			mockAuthUsecase := mocksappauth.NewMockAuthUsecase(ctrl)
+			mockAuthUsecase.EXPECT().VerifyToken(tt.ctx).Return("google-oauth2|000000000000000000000", tt.verifyTokenErr).AnyTimes()
 			mockCombinationUsecase := mocksappcombination.NewMockCombinationUsecase(ctrl)
 			mockCombinationUsecase.EXPECT().GetCombination(int(tt.count)).Return([]element.Element{mockElement, mockElement, mockElement}, tt.getCombinationErr).AnyTimes()
 
-			combinationHandler := NewCombinationHandler(mockCombinationUsecase)
-
+			combinationHandler := NewCombinationHandler(mockAuthUsecase, mockCombinationUsecase)
 			req := &combinationv1.GetCombinationRequest{
 				Count: tt.count,
 			}
