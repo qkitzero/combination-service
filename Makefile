@@ -20,6 +20,8 @@ mock-gen:
 	$(MOCK_GEN) -source=internal/domain/rule/strategy.go -destination=mocks/domain/rule/mock_strategy.go -package=mocks
 	$(MOCK_GEN) -source=internal/domain/language/language.go -destination=mocks/domain/language/mock_language.go -package=mocks
 	$(MOCK_GEN) -source=internal/application/combination/usecase.go -destination=mocks/application/combination/mock_usecase.go -package=mocks
+	$(MOCK_GEN) -source=internal/application/auth/usecase.go -destination=mocks/application/auth/mock_usecase.go -package=mocks
+	$(MOCK_GEN) -destination=mocks/external/auth/v1/mock_client.go -package=mocks github.com/qkitzero/auth-service/gen/go/auth/v1 AuthServiceClient
 
 MIGRATE=migrate -source file://internal/infrastructure/db/migrations -database "postgres://$(DB_USER):$(DB_PASSWORD)@localhost:$(DB_HOST_PORT)/$(DB_NAME)?sslmode=$(DB_SSL_MODE)"
 
