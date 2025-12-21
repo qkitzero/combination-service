@@ -17,6 +17,38 @@
 - Cloud Run
 
 ```mermaid
+classDiagram
+    direction LR
+
+    class Element {
+        id
+        name
+        createdAt
+    }
+
+    class Category {
+        id
+        name
+        createdAt
+    }
+
+    class Language {
+    }
+
+    class Rule {
+        count
+    }
+
+    class Strategy {
+    }
+
+    Element "*" -- "*" Category
+    Category "1" -- "1" Language
+    Element "1" -- "1" Language
+    Rule "1" -- "1" Strategy
+```
+
+```mermaid
 flowchart TD
     subgraph gcp[GCP]
         secret_manager[Secret Manager]
