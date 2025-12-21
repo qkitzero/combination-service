@@ -38,11 +38,6 @@ func (h *CombinationHandler) CreateElement(ctx context.Context, req *combination
 }
 
 func (h *CombinationHandler) ListElements(ctx context.Context, req *combinationv1.ListElementsRequest) (*combinationv1.ListElementsResponse, error) {
-	_, err := h.authUsecase.VerifyToken(ctx)
-	if err != nil {
-		return nil, err
-	}
-
 	elements, err := h.combinationUsecase.ListElements()
 	if err != nil {
 		return nil, err
@@ -90,11 +85,6 @@ func (h *CombinationHandler) CreateCategory(ctx context.Context, req *combinatio
 }
 
 func (h *CombinationHandler) ListCategories(ctx context.Context, req *combinationv1.ListCategoriesRequest) (*combinationv1.ListCategoriesResponse, error) {
-	_, err := h.authUsecase.VerifyToken(ctx)
-	if err != nil {
-		return nil, err
-	}
-
 	categories, err := h.combinationUsecase.ListCategories()
 	if err != nil {
 		return nil, err
@@ -116,11 +106,6 @@ func (h *CombinationHandler) ListCategories(ctx context.Context, req *combinatio
 }
 
 func (h *CombinationHandler) GetCombination(ctx context.Context, req *combinationv1.GetCombinationRequest) (*combinationv1.GetCombinationResponse, error) {
-	_, err := h.authUsecase.VerifyToken(ctx)
-	if err != nil {
-		return nil, err
-	}
-
 	elements, err := h.combinationUsecase.GetCombination(int(req.GetCount()))
 	if err != nil {
 		return nil, err
