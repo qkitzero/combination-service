@@ -36,9 +36,9 @@ func (e element) Language() language.Language {
 }
 
 func (e element) Categories() []category.Category {
-	c := make([]category.Category, len(e.categories))
-	copy(c, e.categories)
-	return c
+	categories := make([]category.Category, len(e.categories))
+	copy(categories, e.categories)
+	return categories
 }
 
 func (e element) CreatedAt() time.Time {

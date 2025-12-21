@@ -4,21 +4,29 @@ import (
 	"context"
 
 	combinationv1 "github.com/qkitzero/combination-service/gen/go/combination/v1"
+	appauth "github.com/qkitzero/combination-service/internal/application/auth"
 	appcombination "github.com/qkitzero/combination-service/internal/application/combination"
 )
 
 type CombinationHandler struct {
 	combinationv1.UnimplementedCombinationServiceServer
+	authUsecase        appauth.AuthUsecase
 	combinationUsecase appcombination.CombinationUsecase
 }
 
-func NewCombinationHandler(combinationUsecase appcombination.CombinationUsecase) *CombinationHandler {
+func NewCombinationHandler(authUsecase appauth.AuthUsecase, combinationUsecase appcombination.CombinationUsecase) *CombinationHandler {
 	return &CombinationHandler{
+		authUsecase:        authUsecase,
 		combinationUsecase: combinationUsecase,
 	}
 }
 
 func (h *CombinationHandler) CreateElement(ctx context.Context, req *combinationv1.CreateElementRequest) (*combinationv1.CreateElementResponse, error) {
+	_, err := h.authUsecase.VerifyToken(ctx)
+	if err != nil {
+		return nil, err
+	}
+
 	element, err := h.combinationUsecase.CreateElement(req.GetName(), req.GetLanguageCode(), req.GetCategoryIds())
 	if err != nil {
 		return nil, err
@@ -61,6 +69,11 @@ func (h *CombinationHandler) ListElements(ctx context.Context, req *combinationv
 }
 
 func (h *CombinationHandler) CreateCategory(ctx context.Context, req *combinationv1.CreateCategoryRequest) (*combinationv1.CreateCategoryResponse, error) {
+	_, err := h.authUsecase.VerifyToken(ctx)
+	if err != nil {
+		return nil, err
+	}
+
 	category, err := h.combinationUsecase.CreateCategory(req.GetName(), req.GetLanguageCode())
 	if err != nil {
 		return nil, err
