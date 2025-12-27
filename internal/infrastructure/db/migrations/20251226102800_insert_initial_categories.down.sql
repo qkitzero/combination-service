@@ -1,0 +1,7 @@
+DELETE FROM categories WHERE id IN (
+'53be22d3-9897-44ea-9448-390e0c4ea356',
+'fed38898-aaf3-47ea-9c87-47b22bade350',
+'a35360d8-a1f7-4315-928c-1b8d71e4c7b4',
+'ad0d7482-9b08-449c-b60e-3b2ebb628d05',
+'690b5197-4464-40bf-904f-2365071aac19'
+);

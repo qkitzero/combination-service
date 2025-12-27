@@ -1,0 +1,16 @@
+INSERT INTO elements (id, name, language_code, created_at) VALUES
+('a08bc9aa-bddf-49ed-b24a-e3255332efad', '業務効率化', 'ja', NOW()),
+('865da001-931a-48a3-8a38-60e17fca6dfa', 'コスト削減', 'ja', NOW()),
+('530618a8-0e64-4bd0-a606-6eca14460062', '差別化', 'ja', NOW()),
+('e595d91a-100b-4de8-bc58-11e7062e677e', 'AI', 'ja', NOW()),
+('c52bbc27-a40d-465d-b30c-67690f429d32', 'データ', 'ja', NOW()),
+('bbf7f391-3759-459d-8044-5c65cfdb345b', 'IoT', 'ja', NOW()),
+('ad8de061-603a-4a2c-bf41-0d69189f5076', '家事', 'ja', NOW()),
+('73e79e83-33eb-4073-b176-99de9e5086dc', '買い物', 'ja', NOW()),
+('1ab2d568-4814-42b8-a5cf-ebe1b9e117af', '食事', 'ja', NOW()),
+('3c4043d7-e517-4362-aa86-88890bdf9c04', '筋トレ', 'ja', NOW()),
+('6585b1a3-caf5-4520-b366-1406b0e30a87', '睡眠', 'ja', NOW()),
+('95c22736-5057-4eab-bc13-a4911ee2747c', 'ストレス', 'ja', NOW()),
+('89c033ab-a1df-451a-a2c7-dcb01d870d68', '言語', 'ja', NOW()),
+('6fc8ef19-5bde-4f21-b681-d4174ffd4003', '芸術', 'ja', NOW()),
+('a0a66d0b-15df-49ef-8082-b142e50ac207', '習慣', 'ja', NOW());
