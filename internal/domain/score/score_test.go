@@ -46,3 +46,42 @@ func TestNewScore(t *testing.T) {
 		})
 	}
 }
+
+func TestIncrementLike(t *testing.T) {
+	t.Parallel()
+	id, err := NewScoreIDFromString("9a356e0c-e0a3-413e-8a4e-c4b6d435511d")
+	if err != nil {
+		t.Errorf("failed to new score id: %v", err)
+	}
+	like, err := NewLike(1)
+	if err != nil {
+		t.Errorf("failed to new like: %v", err)
+	}
+	incrementedLike, err := NewLike(2)
+	if err != nil {
+		t.Errorf("failed to new like: %v", err)
+	}
+	score := NewScore(id, like, time.Now(), time.Now())
+	tests := []struct {
+		name            string
+		success         bool
+		score           Score
+		incrementedLike Like
+	}{
+		{"success increment like", true, score, incrementedLike},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			tt.score.IncrementLike()
+			if tt.success && tt.score.Like() != tt.incrementedLike {
+				t.Errorf("Like() = %v, want %v", tt.score.Like(), tt.incrementedLike)
+			}
+			if tt.success && !tt.score.CreatedAt().Before(tt.score.UpdatedAt()) {
+				t.Errorf("CreatedAt() = %v, UpdatedAt() = %v, want CreatedAt < UpdatedAt", tt.score.CreatedAt(), tt.score.UpdatedAt())
+			}
+		})
+	}
+}

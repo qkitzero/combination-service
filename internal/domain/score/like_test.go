@@ -31,3 +31,33 @@ func TestNewLike(t *testing.T) {
 		})
 	}
 }
+
+func TestIncrement(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name         string
+		success      bool
+		like         int
+		expectedLike int
+	}{
+		{"increment from zero", true, 0, 1},
+		{"increment from positive", true, 5, 6},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			like, err := NewLike(tt.like)
+			if err != nil {
+				t.Errorf("failed to new like")
+			}
+
+			incrementedLike := like.Increment()
+
+			if incrementedLike.Int() != tt.expectedLike {
+				t.Errorf("Increment() = %v, want %v", incrementedLike.Int(), tt.expectedLike)
+			}
+		})
+	}
+}
