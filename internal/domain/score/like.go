@@ -16,7 +16,7 @@ func (l Like) Increment() Like {
 
 func NewLike(value int) (Like, error) {
 	if value < 0 {
-		return 0, fmt.Errorf("like must be positive")
+		return 0, fmt.Errorf("like must be non-negative")
 	}
 	return Like(value), nil
 }
