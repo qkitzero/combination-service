@@ -10,6 +10,7 @@ func TestNewLike(t *testing.T) {
 		like    int
 	}{
 		{"success new like", true, 1},
+		{"success new like with zero", true, 0},
 		{"failure negative like", false, -1},
 	}
 	for _, tt := range tests {
